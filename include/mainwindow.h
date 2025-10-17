@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 
+#include "metatype.h"
 #include "homepage.h"
 #include "qrpage.h"
 #include "registinfo.h"

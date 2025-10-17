@@ -1,9 +1,7 @@
 #include "registinfo.h"
 
-RegistInfo::RegistInfo(QWidget* parent)
+RegistInfo::RegistInfo(QWidget *parent)
     : QWidget(parent)
-{
-
-}
+{}
 
 RegistInfo::~RegistInfo() {}

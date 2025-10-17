@@ -1,9 +1,7 @@
 #include "homepage.h"
 
-HomePage::HomePage(QWidget* parent)
+HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
-{
-
-}
+{}
 
 HomePage::~HomePage() {}
