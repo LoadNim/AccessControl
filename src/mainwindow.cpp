@@ -19,11 +19,22 @@ MainWindow::MainWindow(QWidget *parent)
     m_pPages[static_cast<int>(PageId::RegistCam)]   = m_pRegistCam;
 
     // StackedWidget 등록
-    for (QWidget *p : m_pPages) {
+    for (QWidget *p : m_pPages)
+    {
         m_pStackedWidget->addWidget(p);
     }
-    m_pStackedWidget->setCurrentWidget(m_pPages[0]);
-    setCentralWidget(m_pStackedWidget);
+
+    // Signal - Slot 연결
+    for (int i = 0; i < 4; ++i)
+    {
+        connect(m_pPages[i], SIGNAL(request(PageRequest)),
+                this, SLOT(changePage(PageRequest)));
+    }
+}
+
+void MainWindow::changePage(const PageRequest& req)
+{
+    m_pStackedWidget->setCurrentWidget(m_pPages[static_cast<int>(req.id)]);
 }
 
 MainWindow::~MainWindow() {}

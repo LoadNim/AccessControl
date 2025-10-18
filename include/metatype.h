@@ -25,6 +25,17 @@ struct ResisterInfo
 };
 Q_DECLARE_METATYPE(ResisterInfo)
 
+using PageData =  std::variant<
+                    std::monostate,
+                    QRInfo,
+                    ResisterInfo>;
+Q_DECLARE_METATYPE(PageData)
 
+//위젯 전환 요청
+struct PageRequest
+{
+    PageId id;
+    PageData data = std::monostate{};
+};
 
 #endif // METATYPE_H

@@ -18,6 +18,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void changePage(const PageRequest& req);
+
 private:
     // 서브 위젯 포인터
     HomePage*       m_pHomePage;
