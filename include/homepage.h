@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "metatype.h"
+
 class HomePage : public QWidget
 {
     Q_OBJECT
@@ -10,6 +12,13 @@ class HomePage : public QWidget
 public:
     HomePage(QWidget* parent = nullptr);
     ~HomePage();
+
+signals:
+    void request(PageRequest req);
+
+private:
+
+
 };
 
 #endif // HOMEPAGE_H

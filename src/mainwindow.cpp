@@ -35,6 +35,12 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::changePage(const PageRequest& req)
 {
     m_pStackedWidget->setCurrentWidget(m_pPages[static_cast<int>(req.id)]);
+
+    // 데이터가 있으면 네트워크행
+    if (!std::holds_alternative<std::monostate>(req.data))
+    {
+        // 추후 작성
+    }
 }
 
 MainWindow::~MainWindow() {}

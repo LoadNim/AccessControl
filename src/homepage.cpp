@@ -2,6 +2,8 @@
 
 HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
-{}
+{
+
+}
 
 HomePage::~HomePage() {}
