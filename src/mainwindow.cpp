@@ -19,10 +19,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_pPages[static_cast<int>(PageId::RegistCam)]   = m_pRegistCam;
 
     // StackedWidget 등록
+    m_pStackedWidget = new QStackedWidget(this);
     for (QWidget *p : m_pPages)
     {
         m_pStackedWidget->addWidget(p);
     }
+    setCentralWidget(m_pStackedWidget);
 
     // Signal - Slot 연결
     for (int i = 0; i < 4; ++i)

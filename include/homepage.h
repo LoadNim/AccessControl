@@ -2,6 +2,10 @@
 #define HOMEPAGE_H
 
 #include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 #include "metatype.h"
 
@@ -17,8 +21,10 @@ signals:
     void request(PageRequest req);
 
 private:
-
-
+    QLabel*         m_cameraView;
+    QLabel*         m_guideLabel;
+    QPushButton*    m_btnQR;
+    QPushButton*    m_btnRegist;
 };
 
 #endif // HOMEPAGE_H

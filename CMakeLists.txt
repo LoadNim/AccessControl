@@ -52,7 +52,7 @@ target_include_directories(${PROJECT_NAME}
 # ==============================================================
 # qss/app.qss를 실행파일에 내장한다. 런타임 접근 경로는 ":/qss/app.qss".
 qt_add_resources(${PROJECT_NAME} app_qss
-    PREFIX "/qss"
+    PREFIX "/"
     FILES
         qss/app.qss
         # qss/dark.qss  # ← 다크 테마 등 추가 시 여기에 나열
