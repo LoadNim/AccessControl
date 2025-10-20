@@ -1,23 +1,23 @@
 /* ============================================
    AccessControl - Unified QSS (QLabel 기반)
-   Based on 디자인2.css Prototype
+   최종본
    ============================================ */
 
 /* ---------- Global ---------- */
 QWidget {
-    background-color: #fdfdfd;
+    background-color: #ffffff;                  /* 완전 흰색 */
     color: #00325a;
     font-family: "Segoe UI", "Malgun Gothic";
 }
 
 /* ---------- CameraView (QLabel version) ---------- */
 QLabel#cameraView {
-    background-color: #222;        /* 어두운 회색 배경 */
-    color: #ccc;                   /* 회색 텍스트 */
+    background-color: #ffffff;                  /* 레터박스도 흰색 */
+    color: #666;                                /* (플레이스홀더 텍스트용) */
     border: none;
     border-radius: 12px;
+    qproperty-alignment: AlignCenter;           /* 중앙 정렬 보강 */
     font-size: 1.3rem;
-    text-align: center;
 }
 
 /* ---------- Guide Label ---------- */
@@ -25,10 +25,9 @@ QLabel#guideLabel {
     background: transparent;
     color: #00325a;
     font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
+    font-weight: 700;
     qproperty-alignment: AlignHCenter;
-    margin: 10px 0;
+    padding: 6px 0;
 }
 
 /* ---------- Button (공통 스타일) ---------- */
@@ -39,39 +38,18 @@ QPushButton {
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
-    padding: 14px 24px;
+    padding: 12px 20px;                         /* 내부 여백 */
 }
-QPushButton:hover  { background-color: #004c87; }
-QPushButton:pressed{ background-color: #00263a; }
-
-/* ---------- HomePage Buttons ---------- */
-QPushButton#btnQR {
-    background-color: #00325a;
-}
-QPushButton#btnQR:hover {
-    background-color: #004c87;
-}
-QPushButton#btnRegist {
-    background-color: #00325a;
-}
-QPushButton#btnRegist:hover {
-    background-color: #004c87;
+QPushButton:hover   { background-color: #004c87; }
+QPushButton:pressed { background-color: #00263a; }
+QPushButton:disabled{
+    background-color: #8aa3b7;
+    color: #e8eef3;
 }
 
-/* ---------- Purpose Buttons (QR 화면) ---------- */
-QPushButton[purpose="true"] {
-    background-color: #00325a;
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 12px 20px;
-}
-QPushButton[purpose="true"]:hover  { background-color: #004c87; }
-QPushButton[purpose="true"]:pressed{ background-color: #00263a; }
-QPushButton[purpose="selected"] {
-    background-color: #00cc99;
-    color: #00325a;
-    font-weight: 700;
-}
+/* ---------- HomePage Buttons (개별 식별자) ---------- */
+QPushButton#btnQR     { /* 필요 시 별도 색 지정 가능 */ }
+QPushButton#btnRegist { /* 필요 시 별도 색 지정 가능 */ }
 
 /* ---------- Input Fields ---------- */
 QLineEdit {
@@ -84,36 +62,49 @@ QLineEdit {
 }
 QLineEdit:focus {
     border-color: #00cc99;
-    box-shadow: 0 0 6px rgba(0, 204, 153, 0.45);
 }
 
-/* ---------- Keypad Buttons ---------- */
+/* ---------- Purpose Buttons (QR 화면에서 사용 시) ---------- */
+QPushButton[purpose="true"] {
+    background-color: #00325a;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 12px 20px;
+}
+QPushButton[purpose="true"]:hover   { background-color: #004c87; }
+QPushButton[purpose="true"]:pressed { background-color: #00263a; }
+QPushButton[purpose="selected"] {
+    background-color: #00cc99;
+    color: #00325a;
+    font-weight: 700;
+}
+
+/* ---------- Keypad Buttons (사용 시) ---------- */
 QPushButton[keypad="true"] {
     background-color: #00325a;
     color: #fff;
     border-radius: 8px;
     font-size: 1.2rem;
-    padding: 20px;
+    padding: 18px;
 }
-QPushButton[keypad="true"]:hover  { background-color: #004c87; }
-QPushButton[keypad="true"]:pressed{ background-color: #00263a; }
+QPushButton[keypad="true"]:hover   { background-color: #004c87; }
+QPushButton[keypad="true"]:pressed { background-color: #00263a; }
 
-/* ---------- Center Message Overlay ---------- */
+/* ---------- Center Message Overlay (사용 시) ---------- */
 #centerMessage {
     background: rgba(0, 50, 90, 0.92);
     color: #fff;
-    font-size: 1.3rem;
-    font-weight: bold;
-    padding: 20px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 16px 28px;
     border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
 
-/* ---------- Countdown Timer Badge ---------- */
+/* ---------- Countdown Timer Badge (사용 시) ---------- */
 #timerBadge {
     background: #dc3545;
     color: #fff;
-    font-weight: bold;
+    font-weight: 700;
     border-radius: 8px;
     padding: 8px 12px;
 }

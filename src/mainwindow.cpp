@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     // 윈도우 크기 정의
     resize(1280, 720);
 
+    // 카메라 초기화
+    m_pCamera = new Camera(this);
+
     // 위젯 포인터 초기화
     m_pHomePage = new HomePage(this);
     m_pQRPage = new QRPage(this);
@@ -32,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
         connect(m_pPages[i], SIGNAL(request(PageRequest)),
                 this, SLOT(changePage(PageRequest)));
     }
+
+    connect(m_pCamera, &Camera::updateFrame, this, &MainWindow::frameBroker);
 }
 
 void MainWindow::changePage(const PageRequest& req)
@@ -40,6 +45,21 @@ void MainWindow::changePage(const PageRequest& req)
 
     // 데이터가 있으면 네트워크행
     if (!std::holds_alternative<std::monostate>(req.data))
+    {
+        // 추후 작성
+    }
+}
+
+void MainWindow::frameBroker(const QImage& frame)
+{
+    QWidget* currentPage = m_pStackedWidget->currentWidget();
+
+    if(currentPage == m_pHomePage)
+    {
+        m_pHomePage->updateLabel(frame);
+    }
+
+    else if(currentPage == m_pRegistCam)
     {
         // 추후 작성
     }

@@ -15,6 +15,7 @@ class HomePage : public QWidget
 
 public:
     HomePage(QWidget* parent = nullptr);
+    void updateLabel(const QImage& img);
     ~HomePage();
 
 signals:
