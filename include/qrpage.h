@@ -7,6 +7,16 @@
 #include <QButtonGroup>
 #include <QList>
 #include <QLineEdit>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QFrame>
+#include <QButtonGroup>
+#include <QSpacerItem>
+#include <QSizePolicy>
+#include <QGraphicsDropShadowEffect>
+#include <QRegularExpression>
+#include <QMessageBox>
 
 #include "keypad.h"
 #include "metatype.h"

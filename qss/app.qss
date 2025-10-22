@@ -1,6 +1,6 @@
 /* ============================================
    AccessControl - Unified QSS (QLabel 기반)
-   최종본
+   최종 통합본
    ============================================ */
 
 /* ---------- Global ---------- */
@@ -51,7 +51,7 @@ QPushButton:disabled{
 QPushButton#btnQR     { /* 필요 시 별도 색 지정 가능 */ }
 QPushButton#btnRegist { /* 필요 시 별도 색 지정 가능 */ }
 
-/* ---------- Input Fields ---------- */
+/* ---------- Input Fields (기본) ---------- */
 QLineEdit {
     border: 2px solid #00325a;
     border-radius: 8px;
@@ -64,7 +64,7 @@ QLineEdit:focus {
     border-color: #00cc99;
 }
 
-/* ---------- Purpose Buttons (QR 화면에서 사용 시) ---------- */
+/* ---------- Purpose Buttons (QR 화면) ---------- */
 QPushButton[purpose="true"] {
     background-color: #00325a;
     color: #ffffff;
@@ -73,19 +73,29 @@ QPushButton[purpose="true"] {
 }
 QPushButton[purpose="true"]:hover   { background-color: #004c87; }
 QPushButton[purpose="true"]:pressed { background-color: #00263a; }
+
+/* (호환) 예전 속성 기반 토글 */
 QPushButton[purpose="selected"] {
     background-color: #00cc99;
     color: #00325a;
     font-weight: 700;
 }
+/* (정식) 체크 가능한 버튼일 때 선택 상태 */
+QPushButton[purpose="true"]:checked {
+    background-color: #00cc99;
+    color: #00325a;
+    font-weight: 700;
+}
 
-/* ---------- Keypad Buttons (사용 시) ---------- */
+/* ---------- Keypad Buttons ---------- */
 QPushButton[keypad="true"] {
     background-color: #00325a;
     color: #fff;
     border-radius: 8px;
     font-size: 1.2rem;
     padding: 18px;
+    min-height: 56px;                /* 안정적인 버튼 높이 */
+    min-width: 100px;
 }
 QPushButton[keypad="true"]:hover   { background-color: #004c87; }
 QPushButton[keypad="true"]:pressed { background-color: #00263a; }
@@ -114,29 +124,76 @@ QLineEdit[error="true"] {
     border: 2px solid #dc3545;
 }
 
-/* ---------- QR Page (전화번호 입력 + 전송 버튼) ---------- */
+/* =====================================================
+   ▶ QR Page 전용 재정의 (웹 시안 매칭을 위한 오버라이드)
+   ===================================================== */
 
-QLineEdit#phoneLineEdit { /* */
+/* 상단 바(뒤로가기/타이틀) */
+QPushButton#btnBack {
+  background: #00325a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+QPushButton#btnBack:hover   { background: #004c87; }
+QPushButton#btnBack:pressed { background: #00263a; }
+
+QLabel#qrTitle {
+  color: #00325a;
+  font-size: 17px;       /* 살짝 더 선명하게 */
+  font-weight: 800;
+  letter-spacing: 0.1px;
+}
+
+/* 카드 컨테이너(흰 박스) */
+QFrame#qrCard {
+  background: #ffffff;
+  border-radius: 12px;   /* 그림자는 C++에서 DropShadow로 */
+}
+
+/* 좌/우 패널 자체 여백은 레이아웃에서 처리 */
+QWidget#leftPanel  { }
+QWidget#rightPanel { }
+
+/* 세로 구분선 */
+QFrame#divider {
+  min-width: 2px;
+  max-width: 2px;
+  background: #dddddd;   /* CSS의 border-right: 2px solid #ddd */
+}
+
+/* '방문 목적' 타이틀 */
+QLabel#purposeTitle {
+  color: #00325a;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* 전화번호 입력 + 전송 버튼 (일체형) */
+QLineEdit#phoneLineEdit {
     border: 2px solid #00325a;
     border-right: none;
     border-radius: 8px 0 0 8px;
+    padding: 6px 10px;                 /* 기본보다 타이트하게 */
+    font-size: 14px;
+    background: #ffffff;
 }
+/* 포커스 시 초록 라인이 '두 줄'처럼 보이지 않게 1px로 축소 */
 QLineEdit#phoneLineEdit:focus {
-    border-color: #00cc99;
+    border: 1px solid #00cc99;
     border-right: none;
 }
 
-QPushButton#btnSend { /* */
+QPushButton#btnSend {
     background-color: #00325a;
+    color: #ffffff;
     border: 2px solid #00325a;
     border-left: none;
     border-radius: 0 8px 8px 0;
+    padding: 6px 20px;
+    font-size: 14px;
 }
-QPushButton#btnSend:hover {
-    background-color: #004c87;
-    border-color: #004c87;
- }
-QPushButton#btnSend:pressed {
-    background-color: #00263a;
-    border-color: #00263a;
- }
+QPushButton#btnSend:hover   { background-color: #004c87; border-color: #004c87; }
+QPushButton#btnSend:pressed { background-color: #00263a; border-color: #00263a; }

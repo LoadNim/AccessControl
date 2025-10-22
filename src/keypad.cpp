@@ -19,7 +19,7 @@ KeyPad::KeyPad(QWidget* parent)
         btn->setFocusPolicy(Qt::NoFocus);
         btn->setAutoDefault(false);
         btn->setDefault(false);
-        btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         btn->setMinimumSize(100, 56);
 
         m_btns.append(btn);
