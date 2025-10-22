@@ -2,6 +2,14 @@
 #define QRPAGE_H
 
 #include <QWidget>
+#include <QPushButton>
+#include <QLabel>
+#include <QButtonGroup>
+#include <QList>
+#include <QLineEdit>
+
+#include "keypad.h"
+#include "metatype.h"
 
 class QRPage : public QWidget
 {
@@ -10,6 +18,19 @@ class QRPage : public QWidget
 public:
     QRPage(QWidget* parent = nullptr);
     ~QRPage();
+
+signals:
+    void request();
+
+private:
+    QPushButton*        m_btnBack;
+    QLabel*             m_title;
+    QLabel*             m_purposeTitle;
+    QButtonGroup*       m_purposeBtnGroup;
+    QList<QPushButton*> m_purposeBtns;
+    QLineEdit*          m_phoneLineEdit;
+    QPushButton*        m_btnSend;
+    KeyPad*             m_pKeyPad;
 };
 
 #endif // QRPAGE_H

@@ -113,3 +113,30 @@ QPushButton[keypad="true"]:pressed { background-color: #00263a; }
 QLineEdit[error="true"] {
     border: 2px solid #dc3545;
 }
+
+/* ---------- QR Page (전화번호 입력 + 전송 버튼) ---------- */
+
+QLineEdit#phoneLineEdit { /* */
+    border: 2px solid #00325a;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+QLineEdit#phoneLineEdit:focus {
+    border-color: #00cc99;
+    border-right: none;
+}
+
+QPushButton#btnSend { /* */
+    background-color: #00325a;
+    border: 2px solid #00325a;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+QPushButton#btnSend:hover {
+    background-color: #004c87;
+    border-color: #004c87;
+ }
+QPushButton#btnSend:pressed {
+    background-color: #00263a;
+    border-color: #00263a;
+ }
