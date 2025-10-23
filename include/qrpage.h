@@ -27,10 +27,11 @@ class QRPage : public QWidget
 
 public:
     QRPage(QWidget* parent = nullptr);
+    void clearPage();
     ~QRPage();
 
 signals:
-    void request();
+    void request(PageRequest req);
 
 private:
     QPushButton*        m_btnBack;

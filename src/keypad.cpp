@@ -3,13 +3,14 @@
 KeyPad::KeyPad(QWidget* parent)
     : QWidget(parent)
 {
+    setObjectName("keyPad"); // QSS 스코프 분리
+
     m_pBtnGroup = new QButtonGroup(this);
 
     QGridLayout* keypadLayout = new QGridLayout(this);
     keypadLayout->setSpacing(12);
     keypadLayout->setVerticalSpacing(12);
     keypadLayout->setContentsMargins(8, 12, 8, 12);
-
 
     QStringList keys = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "←"};
 

@@ -3,12 +3,15 @@
 QRPage::QRPage(QWidget* parent)
     : QWidget(parent)
 {
+    setObjectName("qrPage"); // QSS 스코프 분리
+
     // 멤버 위젯(요청한 변수명 유지)
     m_btnBack = new QPushButton(tr("이전 화면"), this);
     m_btnBack->setObjectName("btnBack");
+    m_btnBack->setProperty("kind", "ghost");
 
-    QLabel* title = new QLabel(tr("방문자 QR 코드 발급"), this);
-    title->setObjectName("qrTitle");
+    m_title = new QLabel(tr("방문자 QR 코드 발급"), this);
+    m_title->setObjectName("qrTitle");
 
     m_purposeBtnGroup = new QButtonGroup(this);
     m_purposeBtnGroup->setExclusive(true);
@@ -16,9 +19,11 @@ QRPage::QRPage(QWidget* parent)
     m_phoneLineEdit = new QLineEdit(this);
     m_phoneLineEdit->setObjectName("phoneLineEdit");
     m_phoneLineEdit->setPlaceholderText(tr("전화번호를 입력하세요"));
+    m_phoneLineEdit->setReadOnly(true);
 
     m_btnSend = new QPushButton(tr("전송"), this);
     m_btnSend->setObjectName("btnSend");
+    m_btnSend->setProperty("kind", "primary");
     m_btnSend->setAutoDefault(false);
     m_btnSend->setDefault(false);
     m_btnSend->setFocusPolicy(Qt::NoFocus);
@@ -29,7 +34,7 @@ QRPage::QRPage(QWidget* parent)
     // 상단 바 (타이틀 완전 중앙)
     QWidget* topBar = new QWidget(this);
     QHBoxLayout* topLayout = new QHBoxLayout(topBar);
-    topLayout->setContentsMargins(20, 6, 20, 0);   // 살짝 타이트
+    topLayout->setContentsMargins(20, 6, 20, 0);
     topLayout->setSpacing(0);
 
     // 좌/우 더미 스페이서로 타이틀을 정확히 중앙 정렬
@@ -41,7 +46,7 @@ QRPage::QRPage(QWidget* parent)
 
     topLayout->addWidget(m_btnBack, 0, Qt::AlignLeft);
     topLayout->addStretch(1);
-    topLayout->addWidget(title, 0, Qt::AlignCenter);
+    topLayout->addWidget(m_title, 0, Qt::AlignCenter);
     topLayout->addStretch(1);
     topLayout->addWidget(rightSpacer, 0, Qt::AlignRight);
 
@@ -68,9 +73,9 @@ QRPage::QRPage(QWidget* parent)
     left->setContentsMargins(0, 0, 0, 0);
     left->setSpacing(14);
 
-    QLabel* purposeTitle = new QLabel(tr("방문 목적"), leftPanel);
-    purposeTitle->setObjectName("purposeTitle");
-    left->addWidget(purposeTitle, 0, Qt::AlignHCenter);
+    m_purposeTitle = new QLabel(tr("방문 목적"), leftPanel);
+    m_purposeTitle->setObjectName("purposeTitle");
+    left->addWidget(m_purposeTitle, 0, Qt::AlignHCenter);
 
     QGridLayout* purposeGrid = new QGridLayout();
     purposeGrid->setHorizontalSpacing(12);
@@ -83,12 +88,13 @@ QRPage::QRPage(QWidget* parent)
         QPushButton* btn = new QPushButton(purposes.at(i), leftPanel);
         btn->setCheckable(true);
         btn->setProperty("purpose", true);     // QSS 선택자
-        btn->setFixedSize(100, 50);          // 살짝 컴팩트
+        btn->setFixedSize(100, 50);            // 시안 일치 (QSS도 동일 min 규칙)
         btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         m_purposeBtnGroup->addButton(btn, i);
         int r = i / 2;
         int c = i % 2;
         purposeGrid->addWidget(btn, r, c);
+        m_purposeBtns.append(btn);
     }
     left->addLayout(purposeGrid);
     left->addStretch(1);
@@ -121,9 +127,6 @@ QRPage::QRPage(QWidget* parent)
     m_phoneLineEdit->setFixedHeight(44);
     m_btnSend->setFixedHeight(44);
 
-    m_phoneLineEdit->setObjectName("phoneLineEdit");
-    m_btnSend->setObjectName("btnSend");
-
     phoneGroupLayout->addWidget(m_phoneLineEdit, 1);
     phoneGroupLayout->addWidget(m_btnSend, 0);
 
@@ -150,6 +153,16 @@ QRPage::QRPage(QWidget* parent)
     root->addSpacing(10);
     root->addWidget(card, 0, Qt::AlignHCenter);
     root->addStretch(1);
+
+    connect(m_btnBack, &QPushButton::clicked, this, [=]{
+        clearPage();
+        emit request({PageId::Home});
+    });
+}
+
+void QRPage::clearPage()
+{
+
 }
 
 QRPage::~QRPage() {}

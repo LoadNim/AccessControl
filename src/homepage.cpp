@@ -3,6 +3,8 @@
 HomePage::HomePage(QWidget *parent)
     : QWidget(parent)
 {
+    setObjectName("homePage"); // QSS 스코프 분리
+
     // 카메라 영역
     m_cameraView = new QLabel(this);
     m_cameraView->setObjectName("cameraView");
@@ -78,8 +80,8 @@ void HomePage::updateLabel(const QImage& img)
     QPixmap pixMap = QPixmap::fromImage(img);
     m_cameraView->setPixmap(
         pixMap.scaled(m_cameraView->size(),
-        Qt::KeepAspectRatio,
-        Qt::SmoothTransformation));
+                      Qt::KeepAspectRatio,
+                      Qt::SmoothTransformation));
 }
 
 HomePage::~HomePage() {}

@@ -1,233 +1,202 @@
-/* ============================================
-   AccessControl - Unified QSS (QLabel 기반)
-   최종 통합본
-   ============================================ */
+/* ==========================================
+   app.qss — Qt-pure, no warnings
+   - 크기/레이아웃은 CPP 그대로
+   - 색상/폰트/상태만 적용 (웹 시안 톤)
+   - Qt 미지원 속성 제거(cursor, box-shadow, CSS 변수/함수 등)
+========================================== */
 
-/* ---------- Global ---------- */
-QWidget {
-    background-color: #ffffff;                  /* 완전 흰색 */
-    color: #00325a;
-    font-family: "Segoe UI", "Malgun Gothic";
+/* ----- 공통 기본 ----- */
+* {
+  font-family: "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: 15px;
+  color: #00325a;
+  background: transparent;
+  border: none;
+  outline: 0;
 }
 
-/* ---------- CameraView (QLabel version) ---------- */
-QLabel#cameraView {
-    background-color: #ffffff;                  /* 레터박스도 흰색 */
-    color: #666;                                /* (플레이스홀더 텍스트용) */
-    border: none;
-    border-radius: 12px;
-    qproperty-alignment: AlignCenter;           /* 중앙 정렬 보강 */
-    font-size: 1.3rem;
+/* 전체/화면 배경 */
+QMainWindow,
+QWidget#homePage,
+QWidget#qrPage {
+  background: #f5f7fa;  /* 너무 밝으면 #fdfdfd 사용 */
 }
 
-/* ---------- Guide Label ---------- */
-QLabel#guideLabel {
-    background: transparent;
-    color: #00325a;
-    font-size: 1.1rem;
-    font-weight: 700;
-    qproperty-alignment: AlignHCenter;
-    padding: 6px 0;
-}
-
-/* ---------- Button (공통 스타일) ---------- */
+/* ------------------------------------------
+   버튼 (기본/hover/pressed/disabled)
+------------------------------------------ */
 QPushButton {
-    background-color: #00325a;
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 12px 20px;                         /* 내부 여백 */
+  background: #00325a;     /* 메인 네이비 */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 17px;
+  font-weight: 500;
 }
-QPushButton:hover   { background-color: #004c87; }
-QPushButton:pressed { background-color: #00263a; }
-QPushButton:disabled{
-    background-color: #8aa3b7;
-    color: #e8eef3;
+QPushButton:hover   { background: #004c87; }
+QPushButton:pressed { background: #00263a; }
+QPushButton:disabled {
+  background: #9aa6b2;
+  color: #e6edf3;
 }
 
-/* ---------- HomePage Buttons (개별 식별자) ---------- */
-QPushButton#btnQR     { /* 필요 시 별도 색 지정 가능 */ }
-QPushButton#btnRegist { /* 필요 시 별도 색 지정 가능 */ }
+/* 변형: kind (필요 시 확장) */
+QPushButton[kind="primary"] { /* 기본과 동일 톤 유지 */ }
+QPushButton[kind="ghost"] {
+  background: #00325a;
+  color: #ffffff;
+  border-radius: 8px;
+}
 
-/* ---------- Input Fields (기본) ---------- */
+/* ------------------------------------------
+   입력창 (전화번호 등)
+------------------------------------------ */
 QLineEdit {
-    border: 2px solid #00325a;
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 1rem;
-    color: #00325a;
-    selection-background-color: #00cc99;
+  background: #ffffff;
+  border: 2px solid #00325a;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: #00325a;
 }
 QLineEdit:focus {
-    border-color: #00cc99;
+  border: 2px solid #00cc99;   /* 포커스 라임 */
 }
 
-/* ---------- Purpose Buttons (QR 화면) ---------- */
-QPushButton[purpose="true"] {
-    background-color: #00325a;
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 12px 20px;
+/* ------------------------------------------
+   라벨 / 안내문 / 타이틀
+------------------------------------------ */
+QLabel#guideLabel {
+  color: #00325a;
+  font-size: 17px;
+  font-weight: 700;
 }
-QPushButton[purpose="true"]:hover   { background-color: #004c87; }
-QPushButton[purpose="true"]:pressed { background-color: #00263a; }
-
-/* (호환) 예전 속성 기반 토글 */
-QPushButton[purpose="selected"] {
-    background-color: #00cc99;
-    color: #00325a;
-    font-weight: 700;
+QLabel#qrTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #00325a;
 }
-/* (정식) 체크 가능한 버튼일 때 선택 상태 */
-QPushButton[purpose="true"]:checked {
-    background-color: #00cc99;
-    color: #00325a;
-    font-weight: 700;
+QLabel#purposeTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00325a;
 }
 
-/* ---------- Keypad Buttons ---------- */
-QPushButton[keypad="true"] {
-    background-color: #00325a;
-    color: #fff;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    padding: 18px;
-    min-height: 56px;                /* 안정적인 버튼 높이 */
-    min-width: 100px;
-}
-QPushButton[keypad="true"]:hover   { background-color: #004c87; }
-QPushButton[keypad="true"]:pressed { background-color: #00263a; }
-
-/* ---------- Center Message Overlay (사용 시) ---------- */
-#centerMessage {
-    background: rgba(0, 50, 90, 0.92);
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: 700;
-    padding: 16px 28px;
-    border-radius: 10px;
+/* ------------------------------------------
+   카메라 라벨 - 직각 매트(액자) 스타일
+------------------------------------------ */
+#cameraView {
+  background: #2b2f38;        /* 차콜 그레이 매트 */
+  padding: 10px;              /* 매트 두께(8~12px 권장) */
+  border: 3px solid #2b2f38;  /* 외곽 라인 얇게 */
+  border-radius: 0;           /* 직각 모서리 */
+  color: #cccccc;
+  font-size: 17px;
 }
 
-/* ---------- Countdown Timer Badge (사용 시) ---------- */
-#timerBadge {
-    background: #dc3545;
-    color: #fff;
-    font-weight: 700;
-    border-radius: 8px;
-    padding: 8px 12px;
+/* ------------------------------------------
+   HomePage 전용 버튼(두 액션)
+------------------------------------------ */
+#homePage #btnQR,
+#homePage #btnRegist {
+  min-height: 44px;
+  background: #00325a;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 500;
 }
+#homePage #btnQR:hover,  #homePage #btnRegist:hover  { background: #004c87; }
+#homePage #btnQR:pressed,#homePage #btnRegist:pressed{ background: #00263a; }
 
-/* ---------- Error Highlight ---------- */
-QLineEdit[error="true"] {
-    border: 2px solid #dc3545;
-}
+/* ==========================================
+   QRPage scope
+========================================== */
 
-/* =====================================================
-   ▶ QR Page 전용 재정의 (웹 시안 매칭을 위한 오버라이드)
-   ===================================================== */
-
-/* 상단 바(뒤로가기/타이틀) */
-QPushButton#btnBack {
+/* 상단 뒤로가기(전용 룩/크기감) */
+#qrPage #btnBack {
   background: #00325a;
   color: #ffffff;
   border: none;
   border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: 15px;
+  font-weight: 600;
 }
-QPushButton#btnBack:hover   { background: #004c87; }
-QPushButton#btnBack:pressed { background: #00263a; }
+#qrPage #btnBack:hover   { background: #004c87; }
+#qrPage #btnBack:pressed { background: #00263a; }
 
-QLabel#qrTitle {
-  color: #00325a;
-  font-size: 17px;       /* 살짝 더 선명하게 */
-  font-weight: 800;
-  letter-spacing: 0.1px;
-}
-
-/* 카드 컨테이너(흰 박스) */
-QFrame#qrCard {
+/* 카드 컨테이너 */
+#qrCard {
   background: #ffffff;
-  border-radius: 12px;   /* 그림자는 C++에서 DropShadow로 */
+  border: 1px solid #e6e8ec;   /* box-shadow 대체 (QGraphicsDropShadowEffect는 CPP에서) */
+  border-radius: 12px;
 }
 
-/* 좌/우 패널 자체 여백은 레이아웃에서 처리 */
-QWidget#leftPanel  { }
-QWidget#rightPanel { }
+/* 좌/우 패널 */
+#qrPage #leftPanel,
+#qrPage #rightPanel {
+  background: transparent;
+}
 
 /* 세로 구분선 */
-QFrame#divider {
+#qrPage #divider {
+  background: #dddddd;
   min-width: 2px;
-  max-width: 2px;
-  background: #dddddd;   /* CSS의 border-right: 2px solid #ddd */
 }
 
-/* '방문 목적' 타이틀 */
-QLabel#purposeTitle {
-  color: #00325a;
-  font-weight: 600;
+/* 방문 목적 타이틀 */
+#qrPage #purposeTitle {
   font-size: 16px;
-}
-
-/* ■ 전화번호 입력 + 전송: 컨테이너만 보더/라운딩 (anti-aliasing 보정) */
-QFrame#phoneGroup {
-  border: 2px solid #00325a;
-  border-radius: 12px;
-  background: #ffffff;
-  padding: 0;
-}
-
-/* 내부 위젯은 배경을 그리지 않게(컨테이너 라운드에 정확히 따라감) */
-QLineEdit#phoneLineEdit,
-QLineEdit#phoneLineEdit:hover,
-QLineEdit#phoneLineEdit:focus {
-  border: none;
-  background: transparent;
-  outline: none;
-
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-
-  padding: 6px 10px;
-  font-size: 14px;
+  font-weight: 700;
   color: #00325a;
 }
 
-QPushButton#btnSend,
-QPushButton#btnSend:hover,
-QPushButton#btnSend:pressed,
-QPushButton#btnSend:focus,
-QPushButton#btnSend:default {
+/* 방문 목적 버튼(토글) */
+#qrPage QPushButton[purpose="true"] {
   background: #00325a;
-  color: #fff;
-  border: none;
-
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-right-radius: 12px;   /* phoneGroup과 동일 반경 */
-  border-bottom-right-radius: 12px;
-
-  padding: 6px 20px;
-  font-size: 14px;
-}
-QPushButton#btnSend:hover   { background:#004c87; }
-QPushButton#btnSend:pressed { background:#00263a; }
-
-/* ■ 키패드 버튼: 확장 금지 + 여백/간격 보정 */
-QPushButton[keypad="true"] {
-  background: #00325a;
-  color: #fff;
-  border: none;
+  color: #ffffff;
   border-radius: 8px;
-
-  font-size: 17px;
-  font-weight: 700;
-  padding: 8px 12px;
-
-  min-width: 0;
-  min-height: 0;
+  padding: 12px 20px;
+  font-size: 15px;
 }
-QPushButton[keypad="true"]:hover   { background: #004c87; }
-QPushButton[keypad="true"]:pressed { background: #00263a; }
+#qrPage QPushButton[purpose="true"]:hover   { background: #004c87; }
+#qrPage QPushButton[purpose="true"]:pressed { background: #00263a; }
+#qrPage QPushButton[purpose="true"]:checked {
+  background: #00cc99;
+  color: #00325a;
+  font-weight: 700;
+}
+
+/* 전화 입력 + 전송 묶음(한 덩어리처럼 보이게) */
+#qrPage #phoneGroup QLineEdit {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-right: none;                  /* 버튼과의 경계선 제거 */
+}
+#qrPage #btnSend {
+  /* 기본 버튼 룩 유지 */
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  min-height: 44px;                    /* CPP 고정과 시각 일치 */
+  padding: 0px 18px;                   /* 높이는 레이아웃/고정값, 폭 감 조절만 */
+}
+
+/* 키패드(페이지 내 인스턴스) */
+#qrPage #qrKeyPad QPushButton[keypad="true"] {
+  background: #00325a;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 18px;
+}
+#qrPage #qrKeyPad QPushButton[keypad="true"]:hover   { background: #004c87; }
+#qrPage #qrKeyPad QPushButton[keypad="true"]:pressed { background: #00263a; }
+#qrPage #qrKeyPad QPushButton[keypad="true"][kind="back"] {
+  font-weight: 600;
+}
