@@ -4,9 +4,12 @@ KeyPad::KeyPad(QWidget* parent)
     : QWidget(parent)
 {
     m_pBtnGroup = new QButtonGroup(this);
+
     QGridLayout* keypadLayout = new QGridLayout(this);
-    keypadLayout->setSpacing(8);
-    keypadLayout->setContentsMargins(0, 0, 0, 0);
+    keypadLayout->setSpacing(12);
+    keypadLayout->setVerticalSpacing(12);
+    keypadLayout->setContentsMargins(8, 12, 8, 12);
+
 
     QStringList keys = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "←"};
 
@@ -19,8 +22,9 @@ KeyPad::KeyPad(QWidget* parent)
         btn->setFocusPolicy(Qt::NoFocus);
         btn->setAutoDefault(false);
         btn->setDefault(false);
-        btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        btn->setMinimumSize(100, 56);
+
+        btn->setFixedSize(80, 60);
+        btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
         m_btns.append(btn);
         m_pBtnGroup->addButton(btn);
@@ -39,6 +43,10 @@ KeyPad::KeyPad(QWidget* parent)
         }
     }
     setLayout(keypadLayout);
+
+    this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    this->setMinimumSize(8 + 3*80 + 2*12 + 8,
+                         12 + 4*60  + 3*12 + 12);
 
     connect(m_pBtnGroup, &QButtonGroup::buttonClicked, this, [=](QAbstractButton* btn){
         emit keyClicked(btn->text());

@@ -171,29 +171,63 @@ QLabel#purposeTitle {
   font-size: 16px;
 }
 
-/* 전화번호 입력 + 전송 버튼 (일체형) */
-QLineEdit#phoneLineEdit {
-    border: 2px solid #00325a;
-    border-right: none;
-    border-radius: 8px 0 0 8px;
-    padding: 6px 10px;                 /* 기본보다 타이트하게 */
-    font-size: 14px;
-    background: #ffffff;
-}
-/* 포커스 시 초록 라인이 '두 줄'처럼 보이지 않게 1px로 축소 */
-QLineEdit#phoneLineEdit:focus {
-    border: 1px solid #00cc99;
-    border-right: none;
+/* ■ 전화번호 입력 + 전송: 컨테이너만 보더/라운딩 (anti-aliasing 보정) */
+QFrame#phoneGroup {
+  border: 2px solid #00325a;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 0;
 }
 
-QPushButton#btnSend {
-    background-color: #00325a;
-    color: #ffffff;
-    border: 2px solid #00325a;
-    border-left: none;
-    border-radius: 0 8px 8px 0;
-    padding: 6px 20px;
-    font-size: 14px;
+/* 내부 위젯은 배경을 그리지 않게(컨테이너 라운드에 정확히 따라감) */
+QLineEdit#phoneLineEdit,
+QLineEdit#phoneLineEdit:hover,
+QLineEdit#phoneLineEdit:focus {
+  border: none;
+  background: transparent;
+  outline: none;
+
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+
+  padding: 6px 10px;
+  font-size: 14px;
+  color: #00325a;
 }
-QPushButton#btnSend:hover   { background-color: #004c87; border-color: #004c87; }
-QPushButton#btnSend:pressed { background-color: #00263a; border-color: #00263a; }
+
+QPushButton#btnSend,
+QPushButton#btnSend:hover,
+QPushButton#btnSend:pressed,
+QPushButton#btnSend:focus,
+QPushButton#btnSend:default {
+  background: #00325a;
+  color: #fff;
+  border: none;
+
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 12px;   /* phoneGroup과 동일 반경 */
+  border-bottom-right-radius: 12px;
+
+  padding: 6px 20px;
+  font-size: 14px;
+}
+QPushButton#btnSend:hover   { background:#004c87; }
+QPushButton#btnSend:pressed { background:#00263a; }
+
+/* ■ 키패드 버튼: 확장 금지 + 여백/간격 보정 */
+QPushButton[keypad="true"] {
+  background: #00325a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+
+  font-size: 17px;
+  font-weight: 700;
+  padding: 8px 12px;
+
+  min-width: 0;
+  min-height: 0;
+}
+QPushButton[keypad="true"]:hover   { background: #004c87; }
+QPushButton[keypad="true"]:pressed { background: #00263a; }

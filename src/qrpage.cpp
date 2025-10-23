@@ -3,7 +3,7 @@
 QRPage::QRPage(QWidget* parent)
     : QWidget(parent)
 {
-    // ===== 멤버 위젯(요청한 변수명 유지) =====
+    // 멤버 위젯(요청한 변수명 유지)
     m_btnBack = new QPushButton(tr("이전 화면"), this);
     m_btnBack->setObjectName("btnBack");
 
@@ -19,12 +19,14 @@ QRPage::QRPage(QWidget* parent)
 
     m_btnSend = new QPushButton(tr("전송"), this);
     m_btnSend->setObjectName("btnSend");
+    m_btnSend->setAutoDefault(false);
+    m_btnSend->setDefault(false);
+    m_btnSend->setFocusPolicy(Qt::NoFocus);
 
     m_pKeyPad = new KeyPad(this);
     m_pKeyPad->setObjectName("qrKeyPad");
-    m_pKeyPad->setMaximumWidth(300); // 웹 시안의 max-width 300px 감성
 
-    // ===== 상단 바 (타이틀 완전 중앙) =====
+    // 상단 바 (타이틀 완전 중앙)
     QWidget* topBar = new QWidget(this);
     QHBoxLayout* topLayout = new QHBoxLayout(topBar);
     topLayout->setContentsMargins(20, 6, 20, 0);   // 살짝 타이트
@@ -43,24 +45,24 @@ QRPage::QRPage(QWidget* parent)
     topLayout->addStretch(1);
     topLayout->addWidget(rightSpacer, 0, Qt::AlignRight);
 
-    // ===== 카드 컨테이너 (흰 배경 + 라운드 + 그림자) =====
+    // 카드 컨테이너 (흰 배경 + 라운드 + 그림자)
     QFrame* card = new QFrame(this);
     card->setObjectName("qrCard");
 
     QGraphicsDropShadowEffect* cardShadow = new QGraphicsDropShadowEffect(card);
-    cardShadow->setBlurRadius(18.0);     // 24 → 18 (덜 뜨게)
-    cardShadow->setOffset(0.0, 3.0);     // 4 → 3
+    cardShadow->setBlurRadius(18.0);
+    cardShadow->setOffset(0.0, 3.0);
     cardShadow->setColor(QColor(0, 0, 0, 64));
     card->setGraphicsEffect(cardShadow);
 
     QHBoxLayout* cardLayout = new QHBoxLayout(card);
-    cardLayout->setContentsMargins(26, 22, 26, 22);  // 28,24 → 26,22
+    cardLayout->setContentsMargins(26, 22, 26, 22);
     cardLayout->setSpacing(24);
 
-    // ===== 좌측 패널 (방문 목적) =====
+    // 좌측 패널 (방문 목적)
     QWidget* leftPanel = new QWidget(card);
     leftPanel->setObjectName("leftPanel");
-    leftPanel->setMaximumWidth(480); // 과확장 방지(시안 밸런스용)
+    leftPanel->setMaximumWidth(480);
 
     QVBoxLayout* left = new QVBoxLayout(leftPanel);
     left->setContentsMargins(0, 0, 0, 0);
@@ -81,7 +83,7 @@ QRPage::QRPage(QWidget* parent)
         QPushButton* btn = new QPushButton(purposes.at(i), leftPanel);
         btn->setCheckable(true);
         btn->setProperty("purpose", true);     // QSS 선택자
-        btn->setMinimumSize(116, 50);          // 살짝 컴팩트
+        btn->setFixedSize(100, 50);          // 살짝 컴팩트
         btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         m_purposeBtnGroup->addButton(btn, i);
         int r = i / 2;
@@ -91,7 +93,7 @@ QRPage::QRPage(QWidget* parent)
     left->addLayout(purposeGrid);
     left->addStretch(1);
 
-    // ===== 세로 구분선(상/하 8px 끊김) =====
+    // 세로 구분선(상/하 8px 끊김)
     QFrame* divider = new QFrame(card);
     divider->setObjectName("divider");
     divider->setFrameShape(QFrame::VLine);
@@ -99,54 +101,55 @@ QRPage::QRPage(QWidget* parent)
 
     QWidget* divWrap = new QWidget(card);
     QVBoxLayout* divLay = new QVBoxLayout(divWrap);
-    divLay->setContentsMargins(0, 8, 0, 8);  // 위/아래 여백으로 선을 살짝 끊어줌
+    divLay->setContentsMargins(0, 8, 0, 8);
     divLay->addWidget(divider);
 
-    // ===== 우측 패널 (전화 입력 + 키패드) =====
+    // 우측 패널 (전화 입력 + 키패드)
     QWidget* rightPanel = new QWidget(card);
     rightPanel->setObjectName("rightPanel");
 
     QVBoxLayout* right = new QVBoxLayout(rightPanel);
-    right->setContentsMargins(4, 0, 0, 0);   // 좌 4px만(시작 위치 맞춤)
-    right->setSpacing(12);                   // 16 → 12
+    right->setContentsMargins(0, 0, 0, 0);
+    right->setSpacing(12);
 
-    // 입력줄 + 전송 버튼
-    QWidget* phoneLine = new QWidget(rightPanel);
-    QHBoxLayout* phoneLayout = new QHBoxLayout(phoneLine);
-    phoneLayout->setContentsMargins(0, 0, 0, 0);
-    phoneLayout->setSpacing(0);
+    QFrame* phoneGroup = new QFrame(rightPanel);
+    phoneGroup->setObjectName("phoneGroup");
 
-    m_phoneLineEdit->setFixedHeight(40); // 동일 고정 높이로 정렬 맞춤
-    m_btnSend->setFixedHeight(40);
+    QHBoxLayout* phoneGroupLayout = new QHBoxLayout(phoneGroup);
+    phoneGroupLayout->setContentsMargins(0, 0, 0, 0);
+    phoneGroupLayout->setSpacing(0);
+    m_phoneLineEdit->setFixedHeight(44);
+    m_btnSend->setFixedHeight(44);
 
-    phoneLayout->addWidget(m_phoneLineEdit, 1);
-    phoneLayout->addWidget(m_btnSend, 0);
+    m_phoneLineEdit->setObjectName("phoneLineEdit");
+    m_btnSend->setObjectName("btnSend");
 
-    right->addWidget(phoneLine);
-    right->addWidget(m_pKeyPad, 0, Qt::AlignLeft);
+    phoneGroupLayout->addWidget(m_phoneLineEdit, 1);
+    phoneGroupLayout->addWidget(m_btnSend, 0);
+
+    right->addWidget(phoneGroup, 0, Qt::AlignTop);
+    right->addSpacing(10);
+    right->addWidget(m_pKeyPad, 0, Qt::AlignHCenter | Qt::AlignVCenter);
     right->addStretch(1);
 
-    // ===== 카드 내부 구성 =====
+    // 카드 내부 구성
     cardLayout->addWidget(leftPanel);
-    cardLayout->addWidget(divWrap);    // divider 대신 래퍼를 삽입
+    cardLayout->addWidget(divWrap);
     cardLayout->addWidget(rightPanel);
-    cardLayout->setStretch(0, 4);      // 좌 : 우 = 4 : 6
+    cardLayout->setStretch(0, 4);
     cardLayout->setStretch(2, 6);
 
-    // 카드의 가로폭 한계(시안: 90% / max 1280 느낌)
     card->setMinimumWidth(960);
     card->setMaximumWidth(1280);
 
-    // ===== 루트 레이아웃 =====
+    // 루트 레이아웃
     QVBoxLayout* root = new QVBoxLayout(this);
-    root->setContentsMargins(24, 8, 24, 18);  // 전체 여백 미세 조정
-    root->setSpacing(10);                     // 기본 간격 축소
+    root->setContentsMargins(24, 8, 24, 18);
+    root->setSpacing(10);
     root->addWidget(topBar);
-    root->addSpacing(10);                     // 제목 ↔ 카드 고정 간격
+    root->addSpacing(10);
     root->addWidget(card, 0, Qt::AlignHCenter);
     root->addStretch(1);
-
-    // ※ 시그널/슬롯 연결은 의도적으로 제외 (요청사항)
 }
 
 QRPage::~QRPage() {}
