@@ -158,11 +158,59 @@ QRPage::QRPage(QWidget* parent)
         clearPage();
         emit request({PageId::Home});
     });
+
+    connect(m_btnSend, &QPushButton::clicked, this, [=]{
+        QPushButton* p = qobject_cast<QPushButton*>(m_purposeBtnGroup->checkedButton());
+        if(!p)
+        {
+            QMessageBox::information(this, tr("안내"), tr("방문 목적을 선택하세요."));
+            return;
+        }
+
+        if(!isValidKrMobile(m_phoneLineEdit->text()))
+        {
+            QMessageBox::information(this, tr("안내"), tr("유효한 전화번호를 입력하세요."));
+            return;
+        }
+
+        QRInfo info{p->text(), m_phoneLineEdit->text()};
+        emit request(PageRequest{PageId::Home, PageData{info}});
+    });
+
+    connect(m_pKeyPad, &KeyPad::keyClicked, this, [=](const QString& key){
+        QString currentPhoneNumber = m_phoneLineEdit->text();
+        if(key == "←")
+        {
+            currentPhoneNumber.chop(1);
+        }
+        else
+        {
+            currentPhoneNumber.append(key);
+        }
+        m_phoneLineEdit->setText(currentPhoneNumber);
+    });
 }
 
 void QRPage::clearPage()
 {
+    if(m_purposeBtnGroup)
+    {
+        m_purposeBtnGroup->setExclusive(false);
+        for(QPushButton* p : m_purposeBtns)
+        {
+            if(p)
+            {
+                p->setChecked(false);
+            }
+        }
+        m_purposeBtnGroup->setExclusive(true);
+    }
 
+    if(m_phoneLineEdit)
+    {
+        m_phoneLineEdit->clear();
+        m_phoneLineEdit->setCursorPosition(0);
+    }
 }
 
 QRPage::~QRPage() {}

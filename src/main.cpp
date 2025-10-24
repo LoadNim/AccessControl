@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "metatype.h"
 
 #include <QApplication>
 #include <QFile>
@@ -6,6 +7,11 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    qRegisterMetaType<QRInfo>("QRInfo");
+    qRegisterMetaType<RegistInfo>("RegisterInfo");
+    qRegisterMetaType<PageData>("PageData");
+    qRegisterMetaType<PageRequest>("PageRequset");
 
     QFile f(":/qss/app.qss");
     qDebug() << "QSS exists?" << f.exists();

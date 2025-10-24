@@ -37,5 +37,6 @@ struct PageRequest
     PageId id;
     PageData data = std::monostate{};
 };
+Q_DECLARE_METATYPE(PageRequest)
 
 #endif // METATYPE_H

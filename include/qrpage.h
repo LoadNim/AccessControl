@@ -20,6 +20,7 @@
 
 #include "keypad.h"
 #include "metatype.h"
+#include "phoneutil.h"
 
 class QRPage : public QWidget
 {
