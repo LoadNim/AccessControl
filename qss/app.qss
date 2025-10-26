@@ -200,3 +200,19 @@ QLabel#purposeTitle {
 #qrPage #qrKeyPad QPushButton[keypad="true"][kind="back"] {
   font-weight: 600;
 }
+
+/* 잔여 시간 알림용 버튼 */
+#remainBtn,
+#remainBtn:hover,
+#remainBtn:pressed,
+#remainBtn:checked,
+#remainBtn:disabled,
+#remainBtn:focus {
+  background: #e53e3e;   /* 고정 빨강 */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 16px;
+}

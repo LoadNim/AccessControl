@@ -145,6 +145,13 @@ QRPage::QRPage(QWidget* parent)
     card->setMinimumWidth(960);
     card->setMaximumWidth(1280);
 
+    // 남은 시간 안내용
+    m_remainBtn = new RemainBtn(this);
+    QHBoxLayout* footer = new QHBoxLayout();
+    footer->setContentsMargins(0, 8, 0, 0);
+    footer->addStretch(1);
+    footer->addWidget(m_remainBtn, 0, Qt::AlignRight | Qt::AlignBottom);
+
     // 루트 레이아웃
     QVBoxLayout* root = new QVBoxLayout(this);
     root->setContentsMargins(24, 8, 24, 18);
@@ -153,6 +160,7 @@ QRPage::QRPage(QWidget* parent)
     root->addSpacing(10);
     root->addWidget(card, 0, Qt::AlignHCenter);
     root->addStretch(1);
+    root->addLayout(footer);
 
     connect(m_btnBack, &QPushButton::clicked, this, [=]{
         clearPage();
@@ -210,6 +218,26 @@ void QRPage::clearPage()
     {
         m_phoneLineEdit->clear();
         m_phoneLineEdit->setCursorPosition(0);
+    }
+}
+
+void QRPage::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+
+    if(m_remainBtn)
+    {
+        m_remainBtn->startTimer();
+    }
+}
+
+void QRPage::hideEvent(QHideEvent* event)
+{
+    QWidget::hideEvent(event);
+
+    if(m_remainBtn)
+    {
+        m_remainBtn->stopTimer();
     }
 }
 

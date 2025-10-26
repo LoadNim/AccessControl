@@ -21,6 +21,7 @@
 #include "keypad.h"
 #include "metatype.h"
 #include "phoneutil.h"
+#include "remainbtn.h"
 
 class QRPage : public QWidget
 {
@@ -34,6 +35,10 @@ public:
 signals:
     void request(PageRequest req);
 
+protected:
+    void showEvent(QShowEvent* event) override;
+    void hideEvent(QHideEvent* event) override;
+
 private:
     QPushButton*        m_btnBack;
     QLabel*             m_title;
@@ -43,6 +48,7 @@ private:
     QLineEdit*          m_phoneLineEdit;
     QPushButton*        m_btnSend;
     KeyPad*             m_pKeyPad;
+    RemainBtn*          m_remainBtn;
 };
 
 #endif // QRPAGE_H
