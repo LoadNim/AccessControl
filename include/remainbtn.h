@@ -21,9 +21,9 @@ signals:
     void finished();
 
 private:
-    QPushButton* m_btn;
-    QTimer* m_timer;
-    int m_remainSec;
+    QPushButton*    m_btn;
+    QTimer*         m_timer;
+    int             m_remainSec;
 };
 
 #endif // REMAINBTN_H
