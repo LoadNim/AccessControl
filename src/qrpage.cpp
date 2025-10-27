@@ -162,6 +162,9 @@ QRPage::QRPage(QWidget* parent)
     root->addStretch(1);
     root->addLayout(footer);
 
+    // 토스트 메시지
+    m_toast = new Toast(this);
+
     connect(m_btnBack, &QPushButton::clicked, this, [=]{
         clearPage();
         emit request({PageId::Home});
@@ -171,18 +174,22 @@ QRPage::QRPage(QWidget* parent)
         QPushButton* p = qobject_cast<QPushButton*>(m_purposeBtnGroup->checkedButton());
         if(!p)
         {
-            QMessageBox::information(this, tr("안내"), tr("방문 목적을 선택하세요."));
+            m_toast->showText(tr("방문 목적을 선택하세요."), 1800);
             return;
         }
 
         if(!isValidKrMobile(m_phoneLineEdit->text()))
         {
-            QMessageBox::information(this, tr("안내"), tr("유효한 전화번호를 입력하세요."));
+            m_toast->showText(tr("유효한 전화번호를 입력하세요."), 1800);
             return;
         }
 
         QRInfo info{p->text(), m_phoneLineEdit->text()};
-        emit request(PageRequest{PageId::Home, PageData{info}});
+        connect(m_toast, &Toast::finish, this, [=]{
+            emit request(PageRequest{PageId::Home, PageData{info}});
+        }, Qt::SingleShotConnection);
+
+        m_toast->showText(tr("QR 코드가 발급되었습니다. 휴대폰을 확인하세요."), 1800);
     });
 
     connect(m_pKeyPad, &KeyPad::keyClicked, this, [=](const QString& key){

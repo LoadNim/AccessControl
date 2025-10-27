@@ -22,6 +22,7 @@
 #include "metatype.h"
 #include "phoneutil.h"
 #include "remainbtn.h"
+#include "toast.h"
 
 class QRPage : public QWidget
 {
@@ -47,8 +48,10 @@ private:
     QList<QPushButton*> m_purposeBtns;
     QLineEdit*          m_phoneLineEdit;
     QPushButton*        m_btnSend;
+
     KeyPad*             m_pKeyPad;
     RemainBtn*          m_remainBtn;
+    Toast*              m_toast;
 };
 
 #endif // QRPAGE_H

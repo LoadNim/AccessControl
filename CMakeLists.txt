@@ -18,7 +18,7 @@ set(CMAKE_AUTOMOC ON)
 # Core, Widgets, Network 모듈 사용
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Network)
 
-# 표준 Qt 프로젝트 세팅(경고/생성기 등 플랫폼별 설정 포함)
+# 표준 Qt 프로젝트 세팅(경고/생성기 등 플랫폼s별 설정 포함)
 qt_standard_project_setup()
 
 # ==============================================================

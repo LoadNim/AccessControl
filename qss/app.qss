@@ -216,3 +216,17 @@ QLabel#purposeTitle {
   font-size: 15px;
   padding: 8px 16px;
 }
+
+#toast {
+  background: #00325a;   /* 네이비 */
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 16px 28px;
+}
+#toastLabel {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}

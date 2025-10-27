@@ -38,7 +38,7 @@ Toast::Toast(QWidget* parent)
 
     connect(m_fadeOut, &QPropertyAnimation::finished, this, [this]{
         setVisible(false);
-        emit finish();
+            emit finish();
     });
 }
 
