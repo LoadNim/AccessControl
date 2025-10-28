@@ -55,7 +55,6 @@ qt_add_resources(${PROJECT_NAME} app_qss
     PREFIX "/"
     FILES
         qss/app.qss
-        # qss/dark.qss  # ← 다크 테마 등 추가 시 여기에 나열
 )
 
 # (선택) IDE 트리에서 qss 파일을 보여주고 싶다면 다음 라인으로도 등록 가능

@@ -2,6 +2,16 @@
 #define REGISTINFO_H
 
 #include <QWidget>
+#include <QLineEdit>
+#include <QEvent>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+
+#include "metatype.h"
+#include "uicard.h"
+#include "keypad.h"
+#include "remainbtn.h"
+#include "toast.h"
 
 class RegistInfo : public QWidget
 {
@@ -10,6 +20,27 @@ class RegistInfo : public QWidget
 public:
     RegistInfo(QWidget* parent = nullptr);
     ~RegistInfo();
+
+signals:
+    void request(PageRequest req);
+
+protected:
+    void showEvent(QShowEvent* e) override;
+    void hideEvent(QHideEvent* e) override;
+
+private:
+    QLabel*         m_title;
+    QPushButton*    m_btnBack;
+    QPushButton*    m_btnNext;
+    QLineEdit*      m_editDong;
+    QLineEdit*      m_editHo;
+    QLineEdit*      m_editPhone;
+    QLineEdit*      m_activeEdit;
+
+    UiCard*         m_uiCard;
+    KeyPad*         m_keyPad;
+    RemainBtn*      m_remainBtn;
+    Toast*          m_toast;
 };
 
 #endif // REGISTINFO_H

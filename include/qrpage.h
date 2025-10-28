@@ -23,6 +23,7 @@
 #include "phoneutil.h"
 #include "remainbtn.h"
 #include "toast.h"
+#include "uicard.h"
 
 class QRPage : public QWidget
 {
@@ -52,6 +53,7 @@ private:
     KeyPad*             m_pKeyPad;
     RemainBtn*          m_remainBtn;
     Toast*              m_toast;
+    UiCard*             m_uiCard;
 };
 
 #endif // QRPAGE_H

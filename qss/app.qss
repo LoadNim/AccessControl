@@ -18,7 +18,9 @@
 /* 전체/화면 배경 */
 QMainWindow,
 QWidget#homePage,
-QWidget#qrPage {
+QWidget#qrPage,
+QWidget#registInfoPage
+{
   background: #f5f7fa;  /* 너무 밝으면 #fdfdfd 사용 */
 }
 
@@ -72,7 +74,9 @@ QLabel#guideLabel {
   font-size: 17px;
   font-weight: 700;
 }
-QLabel#qrTitle {
+QLabel #qrTitle,
+QLabel #registInfoPage
+{
   font-size: 20px;
   font-weight: 700;
   color: #00325a;
@@ -115,7 +119,9 @@ QLabel#purposeTitle {
 ========================================== */
 
 /* 상단 뒤로가기(전용 룩/크기감) */
-#qrPage #btnBack {
+#qrPage #btnBack
+#registInfoPage #btnBack
+{
   background: #00325a;
   color: #ffffff;
   border: none;
@@ -127,13 +133,8 @@ QLabel#purposeTitle {
 }
 #qrPage #btnBack:hover   { background: #004c87; }
 #qrPage #btnBack:pressed { background: #00263a; }
-
-/* 카드 컨테이너 */
-#qrCard {
-  background: #ffffff;
-  border: 1px solid #e6e8ec;   /* box-shadow 대체 (QGraphicsDropShadowEffect는 CPP에서) */
-  border-radius: 12px;
-}
+#registInfoPage #btnBack:hover   { background: #004c87; }
+#registInfoPage #btnBack:pressed { background: #00263a; }
 
 /* 좌/우 패널 */
 #qrPage #leftPanel,
@@ -178,7 +179,9 @@ QLabel#purposeTitle {
   border-bottom-right-radius: 0px;
   border-right: none;                  /* 버튼과의 경계선 제거 */
 }
-#qrPage #btnSend {
+#qrPage #btnSend
+#registInfoPage #btnNext
+{
   /* 기본 버튼 룩 유지 */
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
@@ -189,15 +192,22 @@ QLabel#purposeTitle {
 }
 
 /* 키패드(페이지 내 인스턴스) */
-#qrPage #qrKeyPad QPushButton[keypad="true"] {
+#qrPage #qrKeyPad QPushButton[keypad="true"]
+#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]
+{
   background: #00325a;
   color: #ffffff;
   border-radius: 8px;
   font-size: 18px;
 }
+
 #qrPage #qrKeyPad QPushButton[keypad="true"]:hover   { background: #004c87; }
 #qrPage #qrKeyPad QPushButton[keypad="true"]:pressed { background: #00263a; }
-#qrPage #qrKeyPad QPushButton[keypad="true"][kind="back"] {
+#qrPage #qrKeyPad QPushButton[keypad="true"][kind="back"]
+#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]:hover   { background: #004c87; }
+#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]:pressed { background: #00263a; }
+#registInfoPage #registInfoKeyPad QPushButton[keypad="true"][kind="back"]
+{
   font-weight: 600;
 }
 
@@ -225,8 +235,21 @@ QLabel#purposeTitle {
   font-size: 16px;
   padding: 16px 28px;
 }
+
 #toastLabel {
   color: #fff;
   font-size: 16px;
   font-weight: 700;
+}
+
+/* 모든 카드 공통 룩 */
+#uiCard {
+  background: #ffffff;
+  border: 1px solid #e6e8ec;
+  border-radius: 12px;
+}
+
+/* 내부 내용이 겹칠 때 시각적으로 띄워 보이게 */
+#uiCard:hover {
+  border: 1px solid #d0d3d8;
 }

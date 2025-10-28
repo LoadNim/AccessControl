@@ -38,10 +38,8 @@ QRPage::QRPage(QWidget* parent)
     topLayout->setSpacing(0);
 
     // 좌/우 더미 스페이서로 타이틀을 정확히 중앙 정렬
-    QWidget* leftSpacer = new QWidget(topBar);
     QWidget* rightSpacer = new QWidget(topBar);
     int backWidth = m_btnBack->sizeHint().width();
-    leftSpacer->setFixedWidth(backWidth);
     rightSpacer->setFixedWidth(backWidth);
 
     topLayout->addWidget(m_btnBack, 0, Qt::AlignLeft);
@@ -51,21 +49,13 @@ QRPage::QRPage(QWidget* parent)
     topLayout->addWidget(rightSpacer, 0, Qt::AlignRight);
 
     // 카드 컨테이너 (흰 배경 + 라운드 + 그림자)
-    QFrame* card = new QFrame(this);
-    card->setObjectName("qrCard");
-
-    QGraphicsDropShadowEffect* cardShadow = new QGraphicsDropShadowEffect(card);
-    cardShadow->setBlurRadius(18.0);
-    cardShadow->setOffset(0.0, 3.0);
-    cardShadow->setColor(QColor(0, 0, 0, 64));
-    card->setGraphicsEffect(cardShadow);
-
-    QHBoxLayout* cardLayout = new QHBoxLayout(card);
+    m_uiCard = new UiCard(this);
+    QHBoxLayout* cardLayout = new QHBoxLayout(m_uiCard);
     cardLayout->setContentsMargins(26, 22, 26, 22);
     cardLayout->setSpacing(24);
 
     // 좌측 패널 (방문 목적)
-    QWidget* leftPanel = new QWidget(card);
+    QWidget* leftPanel = new QWidget(m_uiCard);
     leftPanel->setObjectName("leftPanel");
     leftPanel->setMaximumWidth(480);
 
@@ -100,18 +90,18 @@ QRPage::QRPage(QWidget* parent)
     left->addStretch(1);
 
     // 세로 구분선(상/하 8px 끊김)
-    QFrame* divider = new QFrame(card);
+    QFrame* divider = new QFrame(m_uiCard);
     divider->setObjectName("divider");
     divider->setFrameShape(QFrame::VLine);
     divider->setLineWidth(2);
 
-    QWidget* divWrap = new QWidget(card);
+    QWidget* divWrap = new QWidget(m_uiCard);
     QVBoxLayout* divLay = new QVBoxLayout(divWrap);
     divLay->setContentsMargins(0, 8, 0, 8);
     divLay->addWidget(divider);
 
     // 우측 패널 (전화 입력 + 키패드)
-    QWidget* rightPanel = new QWidget(card);
+    QWidget* rightPanel = new QWidget(m_uiCard);
     rightPanel->setObjectName("rightPanel");
 
     QVBoxLayout* right = new QVBoxLayout(rightPanel);
@@ -142,8 +132,8 @@ QRPage::QRPage(QWidget* parent)
     cardLayout->setStretch(0, 4);
     cardLayout->setStretch(2, 6);
 
-    card->setMinimumWidth(960);
-    card->setMaximumWidth(1280);
+    m_uiCard->setMinimumWidth(960);
+    m_uiCard->setMaximumWidth(1280);
 
     // 남은 시간 안내용
     m_remainBtn = new RemainBtn(this);
@@ -158,7 +148,7 @@ QRPage::QRPage(QWidget* parent)
     root->setSpacing(10);
     root->addWidget(topBar);
     root->addSpacing(10);
-    root->addWidget(card, 0, Qt::AlignHCenter);
+    root->addWidget(m_uiCard, 0, Qt::AlignHCenter);
     root->addStretch(1);
     root->addLayout(footer);
 
@@ -203,6 +193,13 @@ QRPage::QRPage(QWidget* parent)
             currentPhoneNumber.append(key);
         }
         m_phoneLineEdit->setText(currentPhoneNumber);
+    });
+
+    connect(m_remainBtn, &RemainBtn::finished, this, [=]{
+        m_toast->showText(tr("초기 화면으로 돌아갑니다."), 1800);
+        QTimer::singleShot(1800, this, [=](){
+            emit request(PageRequest{PageId::Home});
+        });
     });
 }
 
