@@ -26,20 +26,23 @@ RegistInfo::RegistInfo(QWidget *parent)
     m_uiCard->setMaximumWidth(1280);
 
     // 카드 내부 입력 필드
-    m_editDong  = new QLineEdit(m_uiCard);
+    m_editDong = new QLineEdit(m_uiCard);
     m_editDong->setObjectName("editDong");
     m_editDong->setPlaceholderText(tr("동을 입력하세요"));
     m_editDong->installEventFilter(this);
+    m_editDong->setReadOnly(true);
 
-    m_editHo    = new QLineEdit(m_uiCard);
+    m_editHo = new QLineEdit(m_uiCard);
     m_editHo->setObjectName("editHo");
     m_editHo->setPlaceholderText(tr("호수를 입력하세요"));
     m_editHo->installEventFilter(this);
+    m_editHo->setReadOnly(true);
 
     m_editPhone = new QLineEdit(m_uiCard);
     m_editPhone->setObjectName("editPhone");
     m_editPhone->setPlaceholderText(tr("전화번호를 입력하세요"));
     m_editPhone->installEventFilter(this);
+    m_editPhone->setReadOnly(true);
 
     m_keyPad = new KeyPad(m_uiCard);
     m_keyPad->setObjectName("registInfoKeyPad");
@@ -81,6 +84,98 @@ RegistInfo::RegistInfo(QWidget *parent)
     root->addWidget(m_uiCard, 0, Qt::AlignHCenter);
     root->addStretch(1);
     root->addLayout(footer);
+
+    m_toast = new Toast(this);
+    setActiveEdit(m_editDong);
+
+    connect(m_btnBack, &QPushButton::clicked, this, [=]{
+        clearPage();
+        emit request({PageId::Home});
+    });
+
+    connect(m_btnNext, &QPushButton::clicked, this, [=]{
+        static const QRegularExpression reDong("^[1-9]\\d{2,3}$");
+        static const QRegularExpression reHo("^[1-9]\\d{2,3}$");
+
+        if(!reDong.match(m_editDong->text()).hasMatch())
+        {
+            m_toast->showText(tr("유효한 동을 입력하세요"), 1800);
+            return;
+        }
+
+        if(!reHo.match(m_editHo->text()).hasMatch())
+        {
+            m_toast->showText(tr("유효한 호수를 입력하세요"), 1800);
+            return;
+        }
+
+        if(!isValidKrMobile(m_editPhone->text()))
+        {
+            m_toast->showText(tr("유효한 전화번호를 입력하세요"), 1800);
+            return;
+        }
+
+        RegisterInfo info{m_editDong->text(), m_editHo->text(), m_editPhone->text()};
+        connect(m_toast, &Toast::finish, this, [=]{
+            clearPage();
+            emit request(PageRequest{PageId::RegistCam, PageData{info}});
+        }, Qt::SingleShotConnection);
+    });
+
+    connect(m_keyPad, &KeyPad::keyClicked, this, [=](const QString& key){
+        QString currentString = m_activeEdit->text();
+        if(key == "←")
+        {
+            currentString.chop(1);
+        }
+        else
+        {
+            currentString.append(key);
+        }
+        m_activeEdit->setText(currentString);
+    });
+
+    connect(m_remainBtn, &RemainBtn::finished, this, [=]{
+        m_toast->showText(tr("초기 화면으로 돌아갑니다."), 1800);
+        QTimer::singleShot(1800, this, [=](){
+            emit request(PageRequest{PageId::Home});
+        });
+    });
+}
+
+void RegistInfo::clearPage()
+{
+    m_editDong->clear();
+    m_editHo->clear();
+    m_editPhone->clear();
+}
+
+void RegistInfo::setActiveEdit(QLineEdit* edit)
+{
+    if(m_activeEdit == edit)
+    {
+        return;
+    }
+
+    auto mark = [](QLineEdit* le, bool on)
+    {
+        if(!le)
+        {
+            return;
+        }
+
+        le->setProperty("active", on);
+        le->style()->unpolish(le);
+        le->style()->polish(le);
+        le->update();
+    };
+
+    mark(m_editDong, false);
+    mark(m_editHo, false);
+    mark(m_editPhone, false);
+
+    m_activeEdit = edit;
+    mark(m_activeEdit, true);
 }
 
 void RegistInfo::showEvent(QShowEvent* e)
@@ -101,5 +196,25 @@ void RegistInfo::hideEvent(QHideEvent* e)
     }
 }
 
+bool RegistInfo::eventFilter(QObject* watched, QEvent* event)
+{
+    if(event->type() == QEvent::FocusIn)
+    {
+        if(watched == m_editDong)
+        {
+            setActiveEdit(m_editDong);
+        }
+        else if(watched == m_editHo)
+        {
+            setActiveEdit(m_editHo);
+        }
+        else if(watched == m_editPhone)
+        {
+            setActiveEdit(m_editPhone);
+        }
+    }
+
+    return QWidget::eventFilter(watched, event);
+}
 
 RegistInfo::~RegistInfo() {}

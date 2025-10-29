@@ -6,12 +6,15 @@
 #include <QEvent>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QRegularExpression>
+#include <QStyle>
 
 #include "metatype.h"
 #include "uicard.h"
 #include "keypad.h"
 #include "remainbtn.h"
 #include "toast.h"
+#include "phoneutil.h"
 
 class RegistInfo : public QWidget
 {
@@ -20,6 +23,8 @@ class RegistInfo : public QWidget
 public:
     RegistInfo(QWidget* parent = nullptr);
     ~RegistInfo();
+    void clearPage();
+    void setActiveEdit(QLineEdit* edit);
 
 signals:
     void request(PageRequest req);
@@ -27,6 +32,7 @@ signals:
 protected:
     void showEvent(QShowEvent* e) override;
     void hideEvent(QHideEvent* e) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
     QLabel*         m_title;

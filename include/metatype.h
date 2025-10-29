@@ -17,18 +17,18 @@ struct QRInfo
 };
 Q_DECLARE_METATYPE(QRInfo)
 
-struct ResisterInfo
+struct RegisterInfo
 {
     QString dong;
     QString ho;
     QString phone;
 };
-Q_DECLARE_METATYPE(ResisterInfo)
+Q_DECLARE_METATYPE(RegisterInfo)
 
 using PageData =  std::variant<
                     std::monostate,
                     QRInfo,
-                    ResisterInfo>;
+                    RegisterInfo>;
 Q_DECLARE_METATYPE(PageData)
 
 //위젯 전환 요청
