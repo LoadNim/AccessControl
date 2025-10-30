@@ -19,7 +19,8 @@
 QMainWindow,
 QWidget#homePage,
 QWidget#qrPage,
-QWidget#registInfoPage
+QWidget#registInfoPage,
+QWidget#registCamPage
 {
   background: #f5f7fa;  /* 너무 밝으면 #fdfdfd 사용 */
 }
@@ -74,8 +75,9 @@ QLabel#guideLabel {
   font-size: 17px;
   font-weight: 700;
 }
-QLabel #qrTitle,
-QLabel #registInfoPage
+#qrPage #qrTitle,
+#registInfoPage #registInfoTitle,
+#registCamPage #registCamTitle
 {
   font-size: 20px;
   font-weight: 700;
@@ -118,9 +120,12 @@ QLabel#purposeTitle {
    QRPage scope
 ========================================== */
 
-/* 상단 뒤로가기(전용 룩/크기감) */
-#qrPage #btnBack
-#registInfoPage #btnBack
+/* 상단 버튼 */
+#qrPage #btnBack,
+#registInfoPage #btnBack,
+#registCamPage #btnBack,
+#registInfoPage #btnNext,
+#registCamPage #btnSend
 {
   background: #00325a;
   color: #ffffff;
@@ -135,6 +140,12 @@ QLabel#purposeTitle {
 #qrPage #btnBack:pressed { background: #00263a; }
 #registInfoPage #btnBack:hover   { background: #004c87; }
 #registInfoPage #btnBack:pressed { background: #00263a; }
+#registInfoPage #btnNext:hover   { background: #004c87; }
+#registInfoPage #btnNext:pressed { background: #00263a; }
+#registCamPage #btnBack:hover   { background: #004c87; }
+#registCamPage #btnBack:pressed { background: #00263a; }
+#registCamPage #btnSend:hover   { background: #004c87; }
+#registCamPage #btnSend:pressed { background: #00263a; }
 
 /* 좌/우 패널 */
 #qrPage #leftPanel,
@@ -180,7 +191,6 @@ QLabel#purposeTitle {
   border-right: none;                  /* 버튼과의 경계선 제거 */
 }
 #qrPage #btnSend
-#registInfoPage #btnNext
 {
   /* 기본 버튼 룩 유지 */
   border-top-left-radius: 0px;
@@ -192,7 +202,7 @@ QLabel#purposeTitle {
 }
 
 /* 키패드(페이지 내 인스턴스) */
-#qrPage #qrKeyPad QPushButton[keypad="true"]
+#qrPage #qrKeyPad QPushButton[keypad="true"],
 #registInfoPage #registInfoKeyPad QPushButton[keypad="true"]
 {
   background: #00325a;
@@ -201,11 +211,19 @@ QLabel#purposeTitle {
   font-size: 18px;
 }
 
-#qrPage #qrKeyPad QPushButton[keypad="true"]:hover   { background: #004c87; }
-#qrPage #qrKeyPad QPushButton[keypad="true"]:pressed { background: #00263a; }
-#qrPage #qrKeyPad QPushButton[keypad="true"][kind="back"]
-#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]:hover   { background: #004c87; }
-#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]:pressed { background: #00263a; }
+#qrPage #qrKeyPad QPushButton[keypad="true"]:hover,
+#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]:hover
+{
+    background: #004c87;
+}
+
+#qrPage #qrKeyPad QPushButton[keypad="true"]:pressed,
+#registInfoPage #registInfoKeyPad QPushButton[keypad="true"]:pressed
+{
+    background: #00263a;
+}
+
+#qrPage #qrKeyPad QPushButton[keypad="true"][kind="back"],
 #registInfoPage #registInfoKeyPad QPushButton[keypad="true"][kind="back"]
 {
   font-weight: 600;

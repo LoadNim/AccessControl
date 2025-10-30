@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QStyle>
 
 #include "metatype.h"
 
@@ -15,11 +16,17 @@ class HomePage : public QWidget
 
 public:
     HomePage(QWidget* parent = nullptr);
-    void updateLabel(const QImage& img);
     ~HomePage();
+    void updateLabel(const QImage& img);
+    void updateGuide(const QString& str);
 
 signals:
     void request(PageRequest req);
+    void setCamMode(bool Mode);
+
+protected:
+    void showEvent(QShowEvent* e) override;
+    void hideEvent(QHideEvent* e) override;
 
 private:
     QLabel*         m_cameraView;

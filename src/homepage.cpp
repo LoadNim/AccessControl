@@ -14,23 +14,27 @@ HomePage::HomePage(QWidget *parent)
     m_cameraView->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     // 안내문구 영역
-    m_guideLabel = new QLabel(u8"화면을 바라보세요", this);
+    m_guideLabel = new QLabel(tr("화면을 바라보세요"), this);
     m_guideLabel->setObjectName("guideLabel");
     m_guideLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     m_guideLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     m_guideLabel->setMinimumHeight(42);
 
     // 버튼 초기화
-    m_btnQR = new QPushButton(u8"방문자 QR 코드 발급", this);
+    m_btnQR = new QPushButton(tr("방문자 QR 코드 발급"), this);
     m_btnQR->setObjectName("btnQR");
     m_btnQR->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_btnQR->setMinimumHeight(48);
+    m_btnQR->setAutoDefault(false);
+    m_btnQR->setDefault(false);
     m_btnQR->setFocusPolicy(Qt::NoFocus);
 
-    m_btnRegist = new QPushButton(u8"세대주 등록하기", this);
+    m_btnRegist = new QPushButton(tr("세대주 등록하기"), this);
     m_btnRegist->setObjectName("btnRegist");
     m_btnRegist->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_btnRegist->setMinimumHeight(48);
+    m_btnRegist->setAutoDefault(false);
+    m_btnRegist->setDefault(false);
     m_btnRegist->setFocusPolicy(Qt::NoFocus);
 
     // 버튼 레이아웃 (두 버튼 폭 동일)
@@ -82,6 +86,24 @@ void HomePage::updateLabel(const QImage& img)
         pixMap.scaled(m_cameraView->size(),
                       Qt::KeepAspectRatio,
                       Qt::SmoothTransformation));
+}
+
+void HomePage::updateGuide(const QString& str)
+{
+    m_guideLabel->setText(str);
+}
+
+void HomePage::showEvent(QShowEvent* e)
+{
+    QWidget::showEvent(e);
+    emit setCamMode(true);
+}
+
+void HomePage::hideEvent(QHideEvent* e)
+{
+    QWidget::hideEvent(e);
+    QString str = tr("화면을 바라보세요");
+    updateGuide(str);
 }
 
 HomePage::~HomePage() {}

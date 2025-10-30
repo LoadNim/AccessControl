@@ -37,16 +37,38 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     connect(m_pCamera, &Camera::updateFrame, this, &MainWindow::frameBroker);
+
+    connect(m_pRegistCam, &RegistCam::isAllowSend, this, [=](bool& trigger){
+        trigger = m_faceImg.size() == 90;
+    });
 }
 
 void MainWindow::changePage(const PageRequest& req)
 {
     m_pStackedWidget->setCurrentWidget(m_pPages[static_cast<int>(req.id)]);
 
-    // 데이터가 있으면 네트워크행
-    if (!std::holds_alternative<std::monostate>(req.data))
+    if(std::holds_alternative<std::monostate>(req.data))
+    {
+        return;
+    }
+    else if(std::holds_alternative<QRInfo>(req.data))
     {
         // 추후 작성
+    }
+    else if(std::holds_alternative<RegisterInfo>(req.data))
+    {
+
+    }
+    else
+    {
+        if(req.data.Trigger)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 }
 
@@ -61,7 +83,7 @@ void MainWindow::frameBroker(const QImage& frame)
 
     else if(currentPage == m_pRegistCam)
     {
-        // 추후 작성
+        m_pRegistCam->updateLabel(frame);
     }
 }
 

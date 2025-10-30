@@ -25,10 +25,17 @@ struct RegisterInfo
 };
 Q_DECLARE_METATYPE(RegisterInfo)
 
+struct SendTrigger
+{
+    bool Trigger;
+};
+Q_DECLARE_METATYPE(SendTrigger)
+
 using PageData =  std::variant<
                     std::monostate,
                     QRInfo,
-                    RegisterInfo>;
+                    RegisterInfo,
+                    SendTrigger>;
 Q_DECLARE_METATYPE(PageData)
 
 //위젯 전환 요청

@@ -25,13 +25,16 @@ private slots:
     void frameBroker(const QImage& frame);
 
 private:
-    Camera*         m_pCamera;
-    HomePage*       m_pHomePage;
-    QRPage*         m_pQRPage;
-    RegistInfo*     m_pRegistInfo;
-    RegistCam*      m_pRegistCam;
+    Camera*                 m_pCamera;
+    HomePage*               m_pHomePage;
+    QRPage*                 m_pQRPage;
+    RegistInfo*             m_pRegistInfo;
+    RegistCam*              m_pRegistCam;
 
-    QWidget*        m_pPages[4];       // StackedWidget 초기화용
-    QStackedWidget* m_pStackedWidget;
+    QWidget*                m_pPages[4];
+    QStackedWidget*         m_pStackedWidget;
+
+    std::vector<cv::Mat>    m_faceImg;
+    RegisterInfo            m_registerInfo;
 };
 #endif // MAINWINDOW_H

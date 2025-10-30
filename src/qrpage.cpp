@@ -9,6 +9,9 @@ QRPage::QRPage(QWidget* parent)
     m_btnBack = new QPushButton(tr("이전 화면"), this);
     m_btnBack->setObjectName("btnBack");
     m_btnBack->setProperty("kind", "ghost");
+    m_btnBack->setAutoDefault(false);
+    m_btnBack->setDefault(false);
+    m_btnBack->setFocusPolicy(Qt::NoFocus);
 
     m_title = new QLabel(tr("방문자 QR 코드 발급"), this);
     m_title->setObjectName("qrTitle");
@@ -80,6 +83,9 @@ QRPage::QRPage(QWidget* parent)
         btn->setProperty("purpose", true);     // QSS 선택자
         btn->setFixedSize(100, 50);            // 시안 일치 (QSS도 동일 min 규칙)
         btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        btn->setAutoDefault(false);
+        btn->setDefault(false);
+        btn->setFocusPolicy(Qt::NoFocus);
         m_purposeBtnGroup->addButton(btn, i);
         int r = i / 2;
         int c = i % 2;

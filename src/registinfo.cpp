@@ -12,6 +12,9 @@ RegistInfo::RegistInfo(QWidget *parent)
     m_btnBack = new QPushButton(tr("이전 화면"), this);
     m_btnBack->setObjectName("btnBack");
     m_btnBack->setProperty("kind", "ghost");
+    m_btnBack->setAutoDefault(false);
+    m_btnBack->setDefault(false);
+    m_btnBack->setFocusPolicy(Qt::NoFocus);
 
     m_btnNext = new QPushButton(tr("다음"), this);
     m_btnNext->setObjectName("btnNext");
@@ -89,7 +92,6 @@ RegistInfo::RegistInfo(QWidget *parent)
     setActiveEdit(m_editDong);
 
     connect(m_btnBack, &QPushButton::clicked, this, [=]{
-        clearPage();
         emit request({PageId::Home});
     });
 
@@ -116,10 +118,7 @@ RegistInfo::RegistInfo(QWidget *parent)
         }
 
         RegisterInfo info{m_editDong->text(), m_editHo->text(), m_editPhone->text()};
-        connect(m_toast, &Toast::finish, this, [=]{
-            clearPage();
-            emit request(PageRequest{PageId::RegistCam, PageData{info}});
-        }, Qt::SingleShotConnection);
+        emit request(PageRequest{PageId::RegistCam, PageData{info}});
     });
 
     connect(m_keyPad, &KeyPad::keyClicked, this, [=](const QString& key){
@@ -192,6 +191,7 @@ void RegistInfo::hideEvent(QHideEvent* e)
     QWidget::hideEvent(e);
     if(m_remainBtn)
     {
+        clearPage();
         m_remainBtn->stopTimer();
     }
 }

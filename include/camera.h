@@ -13,6 +13,7 @@ class Camera : public QObject
 public:
     Camera(QObject* parent = nullptr);
     ~Camera();
+    void setCamMode(bool mode);
 
 signals:
     void updateFrame(QImage);
@@ -23,6 +24,7 @@ private:
     cv::Mat             m_rgbImg;
 
     QTimer*             m_frameTimer;
+    bool                m_camMode;
 };
 
 #endif // CAMERA_H
