@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_pCamera, &Camera::updateFrame, this, &MainWindow::frameBroker);
 
     connect(m_pRegistCam, &RegistCam::isAllowSend, this, [=](bool& trigger){
-        trigger = m_faceImg.size() == 90;
+        trigger = m_faceImg.size() == 20;
     });
 }
 
@@ -51,23 +51,28 @@ void MainWindow::changePage(const PageRequest& req)
     {
         return;
     }
-    else if(std::holds_alternative<QRInfo>(req.data))
+    else if(const QRInfo* info = std::get_if<QRInfo>(&req.data))
     {
-        // 추후 작성
+        // 네트워크 모듈 구현 시 작성
     }
-    else if(std::holds_alternative<RegisterInfo>(req.data))
+    else if(const RegisterInfo* info = std::get_if<RegisterInfo>(&req.data))
     {
-
+        m_registerInfo.dong = info->dong;
+        m_registerInfo.ho = info->ho;
+        m_registerInfo.phone = info->phone;
     }
     else
     {
-        if(req.data.Trigger)
+        if(std::holds_alternative<SendTrigger>(req.data))
         {
-
+            // 네트워크 모듈 구현 시 작성
         }
         else
         {
-
+            m_faceImg.clear();
+            m_registerInfo.dong.clear();
+            m_registerInfo.ho.clear();
+            m_registerInfo.phone.clear();
         }
     }
 }

@@ -88,7 +88,7 @@ RegistCam::RegistCam(QWidget *parent)
         }
         else
         {
-            m_toast->showText(tr("얼굴 사진 90장이 인식되지 않았습니다."), 1800);
+            m_toast->showText(tr("얼굴 사진 20장이 인식되지 않았습니다."), 1800);
             return;
         }
     });
