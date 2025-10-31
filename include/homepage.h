@@ -23,6 +23,7 @@ public:
 signals:
     void request(PageRequest req);
     void setCamMode(bool Mode);
+    void setCamTimer(bool Mode);
 
 protected:
     void showEvent(QShowEvent* e) override;

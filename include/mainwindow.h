@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
+#include <QThread>
 
 #include "metatype.h"
 #include "camera.h"
@@ -20,6 +21,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void frameConsumed();
+
 private slots:
     void changePage(const PageRequest& req);
     void frameBroker(const QImage& frame);
@@ -36,5 +40,8 @@ private:
 
     std::vector<cv::Mat>    m_faceImg;
     RegisterInfo            m_registerInfo;
+
+    QThread*                m_cameraThread = nullptr;
+    void                    stopCameraThread();
 };
 #endif // MAINWINDOW_H

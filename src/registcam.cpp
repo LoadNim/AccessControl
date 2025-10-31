@@ -28,7 +28,7 @@ RegistCam::RegistCam(QWidget *parent)
     m_btnBack->setDefault(false);
     m_btnBack->setFocusPolicy(Qt::NoFocus);
 
-    m_btnSend = new QPushButton(tr("등록 완료"), this);
+    m_btnSend = new QPushButton(tr("등록 요청"), this);
     m_btnSend->setObjectName("btnSend");
     m_btnSend->setProperty("kind", "primary");
     m_btnSend->setAutoDefault(false);
@@ -118,16 +118,18 @@ void RegistCam::updateGuide(const QString& str)
 void RegistCam::showEvent(QShowEvent* e)
 {
     QWidget::showEvent(e);
+    emit setCamMode(false);
+    emit setCamTimer(true);
     if(m_remainBtn)
     {
         m_remainBtn->startTimer();
     }
-    emit setCamMode(false);
 }
 
 void RegistCam::hideEvent(QHideEvent* e)
 {
     QWidget::hideEvent(e);
+    emit setCamTimer(false);
     if(m_remainBtn)
     {
         QString str = tr("화면을 바라보세요.");

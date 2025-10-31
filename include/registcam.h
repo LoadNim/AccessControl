@@ -27,6 +27,7 @@ signals:
     void request(PageRequest req);
     void isAllowSend(bool& trigger);
     void setCamMode(bool mode);
+    void setCamTimer(bool mode);
 
 protected:
     void showEvent(QShowEvent* e) override;

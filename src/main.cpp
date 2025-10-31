@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<RegistInfo>("RegisterInfo");
     qRegisterMetaType<PageData>("PageData");
     qRegisterMetaType<PageRequest>("PageRequset");
+    qRegisterMetaType<cv::Mat>("cv::Mat");
 
     QFile f(":/qss/app.qss");
     qDebug() << "QSS exists?" << f.exists();

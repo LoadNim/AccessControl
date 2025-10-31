@@ -7,7 +7,10 @@ MainWindow::MainWindow(QWidget *parent)
     resize(1280, 720);
 
     // 카메라 초기화
-    m_pCamera = new Camera(this);
+    m_pCamera = new Camera(nullptr);
+    m_cameraThread = new QThread(this);
+    m_pCamera->moveToThread(m_cameraThread);
+    m_cameraThread->start();
 
     // 위젯 포인터 초기화
     m_pHomePage = new HomePage(this);
@@ -39,8 +42,34 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_pCamera, &Camera::updateFrame, this, &MainWindow::frameBroker);
 
     connect(m_pRegistCam, &RegistCam::isAllowSend, this, [=](bool& trigger){
-        trigger = m_faceImg.size() == 20;
+        trigger = m_faceImg.size() >= 20;
     });
+
+    connect(m_pCamera, &Camera::findEntryFace, this, [=](const cv::Mat img){
+        // 네트워크 모듈 구현 시 작성
+    });
+
+    connect(m_pCamera, &Camera::findRegistFace, this, [=](const cv::Mat img){
+        if(m_faceImg.size() != 20)
+        {
+            m_faceImg.push_back(img);
+            int count = m_faceImg.size();
+            QString str = tr("현재 인식된 얼굴 사진: %1장/20장").arg(count);
+            m_pRegistCam->updateGuide(str);
+        }
+        else
+        {
+            QString str = tr("등록 요청 버튼을 눌러주세요");
+            m_pRegistCam->updateGuide(str);
+        }
+    });
+
+    connect(m_pHomePage, &HomePage::setCamMode, m_pCamera, &Camera::setCamMode);
+    connect(m_pHomePage, &HomePage::setCamTimer, m_pCamera, &Camera::setCamTimer);
+    connect(m_pRegistCam, &RegistCam::setCamMode, m_pCamera, &Camera::setCamMode);
+    connect(m_pRegistCam, &RegistCam::setCamTimer, m_pCamera, &Camera::setCamTimer);
+    connect(m_cameraThread, &QThread::finished, m_pCamera, &QObject::deleteLater);
+    connect(this, &MainWindow::frameConsumed, m_pCamera, &Camera::onFrameConsumed);
 }
 
 void MainWindow::changePage(const PageRequest& req)
@@ -49,6 +78,10 @@ void MainWindow::changePage(const PageRequest& req)
 
     if(std::holds_alternative<std::monostate>(req.data))
     {
+        m_faceImg.clear();
+        m_registerInfo.dong.clear();
+        m_registerInfo.ho.clear();
+        m_registerInfo.phone.clear();
         return;
     }
     else if(const QRInfo* info = std::get_if<QRInfo>(&req.data))
@@ -63,17 +96,7 @@ void MainWindow::changePage(const PageRequest& req)
     }
     else
     {
-        if(std::holds_alternative<SendTrigger>(req.data))
-        {
-            // 네트워크 모듈 구현 시 작성
-        }
-        else
-        {
-            m_faceImg.clear();
-            m_registerInfo.dong.clear();
-            m_registerInfo.ho.clear();
-            m_registerInfo.phone.clear();
-        }
+        // 네트워크 모듈 구현 시 작성
     }
 }
 
@@ -90,6 +113,31 @@ void MainWindow::frameBroker(const QImage& frame)
     {
         m_pRegistCam->updateLabel(frame);
     }
+
+    emit frameConsumed();
 }
 
-MainWindow::~MainWindow() {}
+void MainWindow::stopCameraThread()
+{
+
+}
+
+MainWindow::~MainWindow()
+{
+    if(!m_cameraThread)
+    {
+        return;
+    }
+
+    if(m_pCamera)
+    {
+        QMetaObject::invokeMethod(
+            m_pCamera, "setCamTimer",
+            Qt::QueuedConnection,
+            Q_ARG(bool, false)
+            );
+    }
+
+    m_cameraThread->quit();
+    m_cameraThread->wait();
+}

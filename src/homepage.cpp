@@ -97,6 +97,7 @@ void HomePage::showEvent(QShowEvent* e)
 {
     QWidget::showEvent(e);
     emit setCamMode(true);
+    emit setCamTimer(true);
 }
 
 void HomePage::hideEvent(QHideEvent* e)
@@ -104,6 +105,7 @@ void HomePage::hideEvent(QHideEvent* e)
     QWidget::hideEvent(e);
     QString str = tr("화면을 바라보세요");
     updateGuide(str);
+    emit setCamTimer(false);
 }
 
 HomePage::~HomePage() {}
