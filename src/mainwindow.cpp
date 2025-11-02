@@ -12,6 +12,21 @@ MainWindow::MainWindow(QWidget *parent)
     m_pCamera->moveToThread(m_cameraThread);
     m_cameraThread->start();
 
+    m_pNetwork = new NetWork(nullptr);
+    m_networkThread = new QThread(this);
+    m_pNetwork->moveToThread(m_networkThread);
+    connect(m_networkThread, &QThread::started, m_pNetwork, &NetWork::threadInit);
+    connect(m_networkThread, &QThread::finished, m_pNetwork, &QObject::deleteLater);
+    m_networkThread->start();
+
+    connect(m_pNetwork, &NetWork::inferSucceeded, this, [](double sim, QString bestId, int http){
+        qDebug() << "[INFER OK]" << http << "sim=" << sim << "best_id=" << bestId;
+    });
+
+    connect(m_pNetwork, &NetWork::inferFailed, this, [](QString err, int http){
+        qDebug() << "[INFER FAIL]" << http << err;
+    });
+
     // 위젯 포인터 초기화
     m_pHomePage = new HomePage(this);
     m_pQRPage = new QRPage(this);
@@ -46,7 +61,19 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(m_pCamera, &Camera::findEntryFace, this, [=](const cv::Mat img){
-        // 네트워크 모듈 구현 시 작성
+        const qint64 now = QDateTime::currentMSecsSinceEpoch();
+        if (now - m_lastInferMs < 1500)
+        {
+            return;
+        }
+        m_lastInferMs = now;
+
+        if(m_pNetwork)
+        {
+            QMetaObject::invokeMethod(m_pNetwork,[=](){
+                m_pNetwork->postInferMat(img, deviceId);
+            },Qt::QueuedConnection);
+        }
     });
 
     connect(m_pCamera, &Camera::findRegistFace, this, [=](const cv::Mat img){
@@ -86,7 +113,15 @@ void MainWindow::changePage(const PageRequest& req)
     }
     else if(const QRInfo* info = std::get_if<QRInfo>(&req.data))
     {
-        // 네트워크 모듈 구현 시 작성
+        if(m_pNetwork)
+        {
+            const QRInfo infoCopy = *info;
+            QMetaObject::invokeMethod(m_pNetwork, [=](){
+                m_pNetwork->postQrGenerate(infoCopy.phone,
+                                           infoCopy.purpose,
+                                           deviceId);
+            }, Qt::QueuedConnection);
+        }
     }
     else if(const RegisterInfo* info = std::get_if<RegisterInfo>(&req.data))
     {
@@ -140,4 +175,16 @@ MainWindow::~MainWindow()
 
     m_cameraThread->quit();
     m_cameraThread->wait();
+
+    if(m_pNetwork)
+    {
+        QMetaObject::invokeMethod(
+            m_pNetwork, "shutdown",
+            Qt::QueuedConnection);
+    }
+    if(m_networkThread)
+    {
+        m_networkThread->quit();
+        m_networkThread->wait();
+    }
 }

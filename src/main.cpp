@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<QRInfo>("QRInfo");
     qRegisterMetaType<RegistInfo>("RegisterInfo");
     qRegisterMetaType<PageData>("PageData");
-    qRegisterMetaType<PageRequest>("PageRequset");
+    qRegisterMetaType<PageRequest>("PageRequest");
     qRegisterMetaType<cv::Mat>("cv::Mat");
 
     QFile f(":/qss/app.qss");

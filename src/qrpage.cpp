@@ -13,7 +13,7 @@ QRPage::QRPage(QWidget* parent)
     m_btnBack->setDefault(false);
     m_btnBack->setFocusPolicy(Qt::NoFocus);
 
-    m_title = new QLabel(tr("방문자 QR 코드 발급"), this);
+    m_title = new QLabel(tr("방문자 SMS 링크 발급"), this);
     m_title->setObjectName("qrTitle");
 
     m_purposeBtnGroup = new QButtonGroup(this);
@@ -186,7 +186,7 @@ QRPage::QRPage(QWidget* parent)
             emit request(PageRequest{PageId::Home, PageData{info}});
         }, Qt::SingleShotConnection);
 
-        m_toast->showText(tr("QR 코드가 발급되었습니다\n 휴대폰을 확인하세요"), 1800);
+        m_toast->showText(tr("SMS 링크가 발급되었습니다\n 휴대폰을 확인하세요"), 1800);
     });
 
     connect(m_pKeyPad, &KeyPad::keyClicked, this, [=](const QString& key){

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QThread>
+#include <QDateTime>
+#include <QDebug>
 
 #include "metatype.h"
 #include "camera.h"
@@ -12,6 +14,7 @@
 #include "qrpage.h"
 #include "registinfo.h"
 #include "registcam.h"
+#include "network.h"
 
 class MainWindow : public QMainWindow
 {
@@ -43,5 +46,11 @@ private:
 
     QThread*                m_cameraThread = nullptr;
     void                    stopCameraThread();
+
+    QThread*                m_networkThread = nullptr;
+    NetWork*                m_pNetwork = nullptr;
+    qint64                  m_lastInferMs = 0;
+    int                     m_inferIntervalMs = 1500;
+    const QString           deviceId = QStringLiteral("LoadNim_PC");
 };
 #endif // MAINWINDOW_H

@@ -21,7 +21,7 @@ HomePage::HomePage(QWidget *parent)
     m_guideLabel->setMinimumHeight(42);
 
     // 버튼 초기화
-    m_btnQR = new QPushButton(tr("방문자 QR 코드 발급"), this);
+    m_btnQR = new QPushButton(tr("방문자 SMS 링크 발급"), this);
     m_btnQR->setObjectName("btnQR");
     m_btnQR->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_btnQR->setMinimumHeight(48);
