@@ -19,12 +19,37 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_networkThread, &QThread::finished, m_pNetwork, &QObject::deleteLater);
     m_networkThread->start();
 
-    connect(m_pNetwork, &NetWork::inferSucceeded, this, [](double sim, QString bestId, int http){
+    connect(m_pNetwork, &NetWork::inferSucceeded, this, [this](double sim, QString bestId, int http){
         qDebug() << "[INFER OK]" << http << "sim=" << sim << "best_id=" << bestId;
+
+        QJsonObject meta;
+        meta["client"] = deviceId;
+        meta["event_type"] = "entry";
+        meta["timestamp"]  = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
+
+        QMetaObject::invokeMethod(m_pNetwork, [=](){
+            m_pNetwork->postAccessEventMat(meta, m_entryImg, 80);
+        }, Qt::QueuedConnection);
     });
 
     connect(m_pNetwork, &NetWork::inferFailed, this, [](QString err, int http){
         qDebug() << "[INFER FAIL]" << http << err;
+    });
+
+    connect(m_pNetwork, &NetWork::qrSucceeded, this, [](QByteArray data, int http){
+        qDebug() << "[QR OK]" << http << "data=" << data;
+    });
+
+    connect(m_pNetwork, &NetWork::qrFailed, this, [](QString err, int http){
+        qDebug() << "[QR FAIL]" << http << "err" << err;
+    });
+
+    connect(m_pNetwork, &NetWork::registrationDone, this, [](QByteArray data, int http){
+        qDebug() << "[REGIST DONE]" << http << "data=" << data;
+    });
+
+    connect(m_pNetwork, &NetWork::registrationFailed, this, [](QString data, int http){
+        qDebug() << "[REGIST FAIL]" << http << "data" << data;
     });
 
     // 위젯 포인터 초기화
@@ -70,9 +95,10 @@ MainWindow::MainWindow(QWidget *parent)
 
         if(m_pNetwork)
         {
-            QMetaObject::invokeMethod(m_pNetwork,[=](){
-                m_pNetwork->postInferMat(img, deviceId);
-            },Qt::QueuedConnection);
+            m_entryImg = img;
+            QMetaObject::invokeMethod(m_pNetwork, [=](){
+                m_pNetwork->postInferMat(m_entryImg, deviceId);
+            }, Qt::QueuedConnection);
         }
     });
 
@@ -131,7 +157,21 @@ void MainWindow::changePage(const PageRequest& req)
     }
     else
     {
-        // 네트워크 모듈 구현 시 작성
+        QJsonObject meta;
+        meta.insert("dong", m_registerInfo.dong);
+        meta.insert("ho", m_registerInfo.ho);
+        meta.insert("phone", m_registerInfo.phone);
+
+        QList<cv::Mat> imgs;
+        imgs.reserve(m_faceImg.size());
+        for(const cv::Mat& img : m_faceImg)
+        {
+            imgs.push_back(img);
+        }
+
+        QMetaObject::invokeMethod(m_pNetwork, [=](){
+            m_pNetwork->postRegistrationMat(meta, imgs);
+        });
     }
 }
 

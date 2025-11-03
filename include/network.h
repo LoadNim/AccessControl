@@ -98,7 +98,7 @@ private:
     // 서버 베이스 URL
     const QString m_baseQr  = QStringLiteral("http://qr.pssuai.com");
     const QString m_baseApi = QStringLiteral("http://api.pssuai.com");
-    const QString m_baseAi  = QStringLiteral("http://ai.pssuai.com"); // 프록시(HTTPS 사용 권장)
+    const QString m_baseAi  = QStringLiteral("http://ai.pssuai.com");
 
     // 네트워크 정책
     int m_timeoutMs = 15000; // 요청 타임아웃(ms)

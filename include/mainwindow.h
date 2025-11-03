@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QDateTime>
 #include <QDebug>
+#include <QList>
 
 #include "metatype.h"
 #include "camera.h"
@@ -52,5 +53,7 @@ private:
     qint64                  m_lastInferMs = 0;
     int                     m_inferIntervalMs = 1500;
     const QString           deviceId = QStringLiteral("LoadNim_PC");
+
+    cv::Mat                 m_entryImg;
 };
 #endif // MAINWINDOW_H

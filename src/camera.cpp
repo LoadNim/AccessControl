@@ -76,7 +76,7 @@ void Camera::setCamTimer(bool mode)
             }
             if(!m_cam.isOpened())
             {
-                m_cam.open(1);
+                m_cam.open(0);
 
                 if(m_cam.isOpened())
                 {
@@ -115,7 +115,7 @@ bool Camera::findFace()
 
     std::vector<cv::Rect> faces;
     m_faceModel.detectMultiScale
-        (gray, faces, 1.1, 4, 0, cv::Size(200, 200));
+        (gray, faces, 1.1, 3, 0, cv::Size(200, 200));
 
     for(const auto rect : faces)
     {
