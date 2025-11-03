@@ -22,7 +22,7 @@ QWidget#qrPage,
 QWidget#registInfoPage,
 QWidget#registCamPage
 {
-  background: #f5f7fa;  /* 너무 밝으면 #fdfdfd 사용 */
+  background: #fdfdfd;
 }
 
 /* ------------------------------------------
@@ -246,18 +246,22 @@ QLabel#purposeTitle {
 }
 
 #toast {
-  background: #00325a;   /* 네이비 */
-  color: #fff;
-  border-radius: 10px;
+  background: rgba(0, 50, 90, 0.92);
+  color: #ffffff;
+  border-radius: 14px;
   font-weight: 700;
-  font-size: 16px;
-  padding: 16px 28px;
+  font-size: 22px;
+  padding: 32px 80px;
+  min-width: 480px;
+  max-width: 640px;
+  min-height: 120px
 }
 
 #toastLabel {
   color: #fff;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 /* 모든 카드 공통 룩 */

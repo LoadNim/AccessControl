@@ -77,6 +77,8 @@ HomePage::HomePage(QWidget *parent)
     connect(m_btnRegist, &QPushButton::clicked, this, [=]{
         emit request({PageId::RegistInfo});
     });
+
+    m_toast = new Toast(this);
 }
 
 void HomePage::updateLabel(const QImage& img)
@@ -91,6 +93,11 @@ void HomePage::updateLabel(const QImage& img)
 void HomePage::updateGuide(const QString& str)
 {
     m_guideLabel->setText(str);
+}
+
+void HomePage::setToast(const QString& str)
+{
+    m_toast->showText(str);
 }
 
 void HomePage::showEvent(QShowEvent* e)

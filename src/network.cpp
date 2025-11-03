@@ -161,10 +161,25 @@ void NetWork::postQrGenerate(const QString& phoneNumber,
     QNetworkReply* reply = m_net->post(req, body);
     armReplyTimeout(reply);
 
-    connectFinished(reply,
-                    [this](int http, QByteArray data){ emit qrSucceeded(data, http); },
-                    [this](int http, QString err){ emit qrFailed(err, http); }
-                    );
+    connectFinished(reply, [this, phoneNumber](int http, QByteArray data){
+        emit qrSucceeded(data, http);
+
+        m_pollingTable.insert(phoneNumber, QDateTime::currentMSecsSinceEpoch());
+        if(!m_pollTimer)
+        {
+            m_pollTimer = new QTimer(this);
+            connect(m_pollTimer, &QTimer::timeout, this, &NetWork::pollQrStatus);
+        }
+
+        if(!m_pollTimer->isActive())
+        {
+            m_pollTimer->start(1000);
+        }
+    },
+
+    [this](int http, QString err){
+        emit qrFailed(err, http);
+    });
 }
 
 // 2) 유사도 판정: POST https://ai.pssuai.com/infer  (application/json)
@@ -318,4 +333,99 @@ void NetWork::postRegistrationMat(const QJsonObject& metadata, const QList<cv::M
         webps.push_back(w);
     }
     postRegistration(metadata, webps);
+}
+
+void NetWork::pollQrStatus()
+{
+    if(m_pollingTable.isEmpty())
+    {
+        m_pollTimer->stop();
+        return;
+    }
+
+    const qint64 now = QDateTime::currentMSecsSinceEpoch();
+
+    for(auto it = m_pollingTable.begin(); it != m_pollingTable.end();)
+    {
+        const QString phone = it.key();
+        const qint64 startTime = it.value();
+
+        if(now - startTime > 180000)
+        {
+            it = m_pollingTable.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    if(m_pollingTable.isEmpty())
+    {
+        m_pollTimer->stop();
+        return;
+    }
+
+    if(!m_net)
+    {
+        return;
+    }
+
+    QUrl url(m_baseApi + "/qr-events");
+    QNetworkRequest req = makeJsonRequest(url);
+    QNetworkReply* reply = m_net->get(req);
+    armReplyTimeout(reply);
+
+    connectFinished(reply, [this](int http, QByteArray data){
+        QJsonDocument doc = QJsonDocument::fromJson(data);
+        if(!doc.isObject())
+        {
+            return;
+        }
+        QJsonArray events = doc.object().value("qr_events").toArray();
+
+        QList<QString> authenticatedPhones;
+
+        for(const QJsonValue& eventValue : events)
+        {
+            QJsonObject evt = eventValue.toObject();
+            QString phone = evt.value("phone").toString();
+            QString status = evt.value("status").toString();
+
+            if(status == "인증됨" && m_pollingTable.contains(phone))
+            {
+                qint64 pollStartTime = m_pollingTable.value(phone);
+                QDateTime eventTime = QDateTime::fromString(
+                    evt.value("requested_at").toString(),
+                    Qt::ISODate);
+                qint64 eventTimeMs = eventTime.toMSecsSinceEpoch();
+
+                qDebug() << "[TIME DEBUG] (Event Time)  " << eventTime.toString(Qt::ISODate)
+                         << "(" << eventTimeMs << "ms)";
+                qDebug() << "[TIME DEBUG] (Poll Start)  " << QDateTime::fromMSecsSinceEpoch(pollStartTime).toString(Qt::ISODate)
+                         << "(" << pollStartTime << "ms)";
+                qDebug() << "[TIME DEBUG] (Condition)   if (" << eventTimeMs << ">" << pollStartTime << ")";
+                if(eventTime.toMSecsSinceEpoch() > pollStartTime)
+                {
+                    authenticatedPhones.append(phone);
+                    emit qrAuthenticated(phone, evt.value("purpose").toString());
+                }
+            }
+        }
+
+        for(const QString& phone : authenticatedPhones)
+        {
+            m_pollingTable.remove(phone);
+        }
+
+        if (m_pollingTable.isEmpty())
+        {
+            m_pollTimer->stop();
+        }
+    },
+    [this](int http, QString err)
+    {
+        qDebug() << "[POLL FAIL] GET Error:" << http << err;
+    }
+    );
 }

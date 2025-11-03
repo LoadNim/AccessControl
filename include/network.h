@@ -12,6 +12,8 @@
 #include <QTimer>
 #include <QThread>
 #include <QDebug>
+#include <QHash>
+#include <QDateTime>
 
 // OpenCV
 #include <opencv2/core.hpp>
@@ -54,6 +56,8 @@ public slots:
     void postRegistrationMat(const QJsonObject& metadata, const QList<cv::Mat>& bgrFrames,
                              int webpQuality = 80);
 
+    void pollQrStatus();
+
 signals:
     // QR
     void qrSucceeded(QByteArray body, int httpStatus);
@@ -70,6 +74,8 @@ signals:
     // 등록
     void registrationDone(QByteArray body, int httpStatus);
     void registrationFailed(QString error, int httpStatus);
+
+    void qrAuthenticated(QString phone, QString purpose);
 
 private:
     // 공통 빌더/유틸
@@ -102,6 +108,9 @@ private:
 
     // 네트워크 정책
     int m_timeoutMs = 15000; // 요청 타임아웃(ms)
+
+    QHash<QString, qint64> m_pollingTable;
+    QTimer*                m_pollTimer = nullptr;
 };
 
 #endif // NETWORK_H

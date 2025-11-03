@@ -9,6 +9,7 @@
 #include <QStyle>
 
 #include "metatype.h"
+#include "toast.h"
 
 class HomePage : public QWidget
 {
@@ -19,6 +20,7 @@ public:
     ~HomePage();
     void updateLabel(const QImage& img);
     void updateGuide(const QString& str);
+    void setToast(const QString& str);
 
 signals:
     void request(PageRequest req);
@@ -34,6 +36,7 @@ private:
     QLabel*         m_guideLabel;
     QPushButton*    m_btnQR;
     QPushButton*    m_btnRegist;
+    Toast*          m_toast;
 };
 
 #endif // HOMEPAGE_H

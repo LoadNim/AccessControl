@@ -186,7 +186,7 @@ QRPage::QRPage(QWidget* parent)
             emit request(PageRequest{PageId::Home, PageData{info}});
         }, Qt::SingleShotConnection);
 
-        m_toast->showText(tr("SMS 링크가 발급되었습니다\n 휴대폰을 확인하세요"), 1800);
+        m_toast->showText(tr("SMS 링크 발급 요청이 전송되었습니다\n 잠시 기다려주세요."), 1800);
     });
 
     connect(m_pKeyPad, &KeyPad::keyClicked, this, [=](const QString& key){

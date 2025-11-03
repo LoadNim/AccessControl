@@ -1,5 +1,12 @@
 #include "mainwindow.h"
 
+static inline QString nowKstIso()
+{
+    return QDateTime::currentDateTimeUtc()
+        .toOffsetFromUtc(9 * 3600)
+        .toString(Qt::ISODate);
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -22,34 +29,63 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_pNetwork, &NetWork::inferSucceeded, this, [this](double sim, QString bestId, int http){
         qDebug() << "[INFER OK]" << http << "sim=" << sim << "best_id=" << bestId;
 
-        QJsonObject meta;
-        meta["client"] = deviceId;
-        meta["event_type"] = "entry";
-        meta["timestamp"]  = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
+        if(sim > 0.7)
+        {
+            m_pHomePage->setToast(tr("등록된 얼굴이 인식되었습니다\n 문이 열립니다"));
+        }
 
-        QMetaObject::invokeMethod(m_pNetwork, [=](){
-            m_pNetwork->postAccessEventMat(meta, m_entryImg, 80);
-        }, Qt::QueuedConnection);
+        else
+        {
+            m_pHomePage->updateGuide(tr("등록되지 않은 얼굴입니다\n 다시 인식해주세요"));
+            QTimer::singleShot(3000, this, [this]() {
+                m_pHomePage->updateGuide(tr("화면을 바라보세요"));
+            });
+        }
+
+        if (m_pNetwork && !m_entryImg.empty())
+        {
+            Info accessInfo;
+            accessInfo.sendtype = 0;
+            QJsonObject metadata = buildEnvelope(accessInfo);
+            QJsonObject data = metadata["data"].toObject();
+            data["similarity"] = sim;
+            data["best_id"] = bestId;
+            metadata["data"] = data;
+            // qDebug() << metadata;
+
+            cv::Mat imgCopy = m_entryImg.clone();
+            QMetaObject::invokeMethod(m_pNetwork, [=](){
+                m_pNetwork->postAccessEventMat(metadata, imgCopy, 80);
+            }, Qt::QueuedConnection);
+        }
     });
 
-    connect(m_pNetwork, &NetWork::inferFailed, this, [](QString err, int http){
+    connect(m_pNetwork, &NetWork::inferFailed, this, [this](QString err, int http){
         qDebug() << "[INFER FAIL]" << http << err;
+        m_pHomePage->setToast(tr("AI 서버와의 통신에 실패했습니다\n 관리자에게 문의하세요"));
     });
 
     connect(m_pNetwork, &NetWork::qrSucceeded, this, [](QByteArray data, int http){
         qDebug() << "[QR OK]" << http << "data=" << data;
     });
 
-    connect(m_pNetwork, &NetWork::qrFailed, this, [](QString err, int http){
+    connect(m_pNetwork, &NetWork::qrFailed, this, [this](QString err, int http){
         qDebug() << "[QR FAIL]" << http << "err" << err;
+        m_pHomePage->setToast(tr("QR 서버와의 통신에 실패했습니다\n 관리자에게 문의하세요"));
     });
 
     connect(m_pNetwork, &NetWork::registrationDone, this, [](QByteArray data, int http){
         qDebug() << "[REGIST DONE]" << http << "data=" << data;
     });
 
-    connect(m_pNetwork, &NetWork::registrationFailed, this, [](QString data, int http){
+    connect(m_pNetwork, &NetWork::registrationFailed, this, [this](QString data, int http){
         qDebug() << "[REGIST FAIL]" << http << "data" << data;
+        m_pHomePage->setToast("얼굴 등록에 실패했습니다\n 관리자에게 문의하세요");
+    });
+
+    connect(m_pNetwork, &NetWork::qrAuthenticated, this, [this](QString phone, QString purpose){
+        qDebug() << "[QR AUTHENTICATED]" << "phone:" << phone << "purpose:" << purpose;
+        m_pHomePage->setToast(tr("SMS 인증이 감지되었습니다\n 문이 열립니다"));
     });
 
     // 위젯 포인터 초기화
@@ -157,21 +193,25 @@ void MainWindow::changePage(const PageRequest& req)
     }
     else
     {
-        QJsonObject meta;
-        meta.insert("dong", m_registerInfo.dong);
-        meta.insert("ho", m_registerInfo.ho);
-        meta.insert("phone", m_registerInfo.phone);
-
-        QList<cv::Mat> imgs;
-        imgs.reserve(m_faceImg.size());
-        for(const cv::Mat& img : m_faceImg)
+        if (m_pNetwork)
         {
-            imgs.push_back(img);
-        }
+            Info registInfo;
+            registInfo.dong = m_registerInfo.dong;
+            registInfo.ho = m_registerInfo.ho;
+            registInfo.phone = m_registerInfo.phone;
+            registInfo.sendtype = 1;
 
-        QMetaObject::invokeMethod(m_pNetwork, [=](){
-            m_pNetwork->postRegistrationMat(meta, imgs);
-        });
+            QJsonObject metadata = buildEnvelope(registInfo);
+            QList<cv::Mat> safeImages;
+            for(const auto& img : m_faceImg)
+            {
+                safeImages.push_back(img.clone());
+            }
+
+            QMetaObject::invokeMethod(m_pNetwork, [=](){
+                m_pNetwork->postRegistrationMat(metadata, safeImages, 80);
+            }, Qt::QueuedConnection);
+        }
     }
 }
 
@@ -195,6 +235,26 @@ void MainWindow::frameBroker(const QImage& frame)
 void MainWindow::stopCameraThread()
 {
 
+}
+
+QJsonObject MainWindow::buildEnvelope(const Info& info) const
+{
+    QJsonObject client{
+        { "device_id", deviceId }, // ◀ v2의 멤버 변수 사용
+        { "version",   "v2-client-1.0" }
+    };
+
+    QJsonObject env{
+        { "type",   "access_control" }, // (이벤트 타입)
+        { "schema", 2 },
+        { "client", client },
+        { "data",   info.toJson() } // ◀ Info 구조체의 toJson() 호출
+    };
+
+    QJsonObject timing;
+    timing["capture_time"] = nowKstIso();
+    env["timing"] = timing;
+    return env;
 }
 
 MainWindow::~MainWindow()

@@ -10,12 +10,13 @@
 
 #include "metatype.h"
 #include "camera.h"
-
 #include "homepage.h"
 #include "qrpage.h"
 #include "registinfo.h"
 #include "registcam.h"
 #include "network.h"
+#include "dto.h"
+#include <QHostInfo>
 
 class MainWindow : public QMainWindow
 {
@@ -55,5 +56,7 @@ private:
     const QString           deviceId = QStringLiteral("LoadNim_PC");
 
     cv::Mat                 m_entryImg;
+
+    QJsonObject             buildEnvelope(const Info& info) const;
 };
 #endif // MAINWINDOW_H
